@@ -20,6 +20,10 @@ export type Product = {
   price: number
   image?: string
   category?: string
+  description?: string
+  features?: string[]
+  brand?: string
+  sku?: string
 }
 
 export type CartItem = {

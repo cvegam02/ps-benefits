@@ -6,13 +6,12 @@ import { products, tenants, getDiscountedPrice, formatMXN } from "@/lib/mock-dat
 import { Product } from "@/lib/types"
 import Image from "next/image"
 
-const CATEGORIES = ["Todos los productos", "Electrónica", "Computación", "Audio", "Wearables"]
+const CATEGORIES = ["Todos los productos", "Calzado", "Ropa", "Accesorios"]
 const CATEGORY_MAP: Record<string, string> = {
   "Todos los productos": "",
-  Electrónica: "Electrónica",
-  Computación: "Computación",
-  Audio: "Audio",
-  Wearables: "Wearables",
+  Calzado: "Calzado",
+  Ropa: "Ropa",
+  Accesorios: "Accesorios",
 }
 
 export default function CatalogView() {
@@ -438,7 +437,7 @@ function MobileProductCard({
           className="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center group-hover:bg-price-blue-50 transition-colors mb-3"
         >
           {product.image ? (
-            <Image src={product.image} alt={product.name} fill className="object-cover" unoptimized />
+            <Image src={product.image} alt={product.name} fill className="object-contain p-1" unoptimized />
           ) : (
             <span className="text-4xl">{categoryEmoji(product.category)}</span>
           )}
@@ -496,7 +495,7 @@ function MobileProductCard({
           style={{ width: 100, height: 100 }}
         >
           {product.image ? (
-            <Image src={product.image} alt={product.name} fill className="object-cover" unoptimized />
+            <Image src={product.image} alt={product.name} fill className="object-contain p-1" unoptimized />
           ) : (
             <span className="text-3xl">{categoryEmoji(product.category)}</span>
           )}
@@ -574,7 +573,7 @@ function DesktopProductCard({
       {/* Image */}
       <button onClick={onDetail} className="relative w-full bg-gray-50 rounded-[2rem] overflow-hidden flex items-center justify-center mb-5 group-hover:bg-price-blue-50 transition-colors" style={{ height: 220 }}>
         {product.image ? (
-          <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" unoptimized />
+          <Image src={product.image} alt={product.name} fill className="object-contain p-3 transition-transform duration-700" unoptimized />
         ) : (
           <span className="text-7xl group-hover:scale-125 transition-transform duration-700">{categoryEmoji(product.category)}</span>
         )}
@@ -629,10 +628,9 @@ function DesktopProductCard({
 
 function categoryEmoji(category?: string): string {
   switch (category) {
-    case "Electrónica": return "📱"
-    case "Computación": return "💻"
-    case "Audio": return "🎧"
-    case "Wearables": return "⌚"
+    case "Calzado": return "👟"
+    case "Ropa": return "👕"
+    case "Accesorios": return "👜"
     default: return "📦"
   }
 }

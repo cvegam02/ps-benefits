@@ -3,12 +3,14 @@
 import { useState } from "react"
 import { useApp } from "@/context/AppContext"
 import { products, tenants, getDiscountedPrice, formatMXN } from "@/lib/mock-data"
+import { usePriceShoeProduct } from "@/lib/usePriceShoeProduct"
 import Image from "next/image"
 
 export default function ProductDetailView() {
   const { state, dispatch } = useApp()
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(0)
+  const [selectedSize, setSelectedSize] = useState<string | null>(null)
 
   const tenant = state.currentUser
     ? tenants.find((t) => t.id === state.currentUser!.tenantId)
@@ -18,19 +20,27 @@ export default function ProductDetailView() {
 
   const cartCount = state.cart.reduce((sum, i) => sum + i.quantity, 0)
   const selectedProduct = state.selectedProduct
+  const { data: apiData, loading: apiLoading } = usePriceShoeProduct(selectedProduct?.sku)
 
   if (!selectedProduct) {
     dispatch({ type: "SET_VIEW", payload: "catalog" })
     return null
   }
 
-  const finalPrice = getDiscountedPrice(selectedProduct.price, discount)
+  // Prices: prefer API data, fall back to mock price
+  const baseCustomerPrice = apiData?.priceCustomer ?? selectedProduct.price
+  const baseMemberPrice = apiData?.priceMember ?? selectedProduct.price
+  const finalPrice = getDiscountedPrice(baseMemberPrice, discount)
+  const totalSavingsPct = baseCustomerPrice > 0
+    ? Math.round(((baseCustomerPrice - finalPrice) / baseCustomerPrice) * 100)
+    : discount
 
-  const productImages = [
-    selectedProduct.image,
-    selectedProduct.image,
-    selectedProduct.image,
-  ]
+  // Images: prefer API images array, fall back to mock image
+  const productImages: string[] = apiData?.images?.length
+    ? apiData.images
+    : selectedProduct.image
+    ? [selectedProduct.image]
+    : []
 
   function addToCart() {
     for (let i = 0; i < quantity; i++) {
@@ -46,6 +56,13 @@ export default function ProductDetailView() {
   function goBack() {
     dispatch({ type: "SELECT_PRODUCT", payload: null })
     dispatch({ type: "SET_VIEW", payload: "catalog" })
+  }
+
+  function selectRelated(product: typeof selectedProduct) {
+    dispatch({ type: "SELECT_PRODUCT", payload: product })
+    setSelectedImage(0)
+    setQuantity(1)
+    setSelectedSize(null)
   }
 
   return (
@@ -91,7 +108,7 @@ export default function ProductDetailView() {
           {/* Image gallery */}
           <div className="relative bg-gray-100 aspect-square">
             {selectedProduct.image ? (
-              <Image src={productImages[selectedImage] ?? ""} alt={selectedProduct.name} fill className="object-cover" unoptimized />
+              <Image src={productImages[selectedImage] ?? ""} alt={selectedProduct.name} fill className="object-contain" unoptimized />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-6xl">
                 {categoryEmoji(selectedProduct.category)}
@@ -123,43 +140,112 @@ export default function ProductDetailView() {
           {/* Product info */}
           <div className="bg-white px-4 py-5 flex flex-col gap-5">
             <div>
-              <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-widest mb-1">{selectedProduct.category}</p>
+              <div className="flex items-center gap-2 mb-1">
+                <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-widest">{selectedProduct.category}</p>
+                {apiData?.labels?.map((label) => (
+                  <span key={label} className="text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 px-2 py-0.5 rounded-full">
+                    {label}
+                  </span>
+                ))}
+                {!apiData?.outOfStock && apiData?.inStock && (
+                  <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                    Disponible
+                  </span>
+                )}
+                {apiData?.outOfStock && (
+                  <span className="text-[9px] font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">
+                    Agotado
+                  </span>
+                )}
+              </div>
               <h2 className="text-xl font-black text-gray-900 leading-tight">{selectedProduct.name}</h2>
             </div>
 
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-price-blue-900 tracking-tight">{formatMXN(finalPrice)}</span>
-              {discount > 0 && (
-                <>
-                  <span className="text-sm text-gray-400 line-through font-medium">{formatMXN(selectedProduct.price)}</span>
-                  <span className="text-xs font-black text-white bg-price-pink-600 px-2 py-0.5 rounded-full uppercase tracking-tight">
-                    {discount}% OFF
-                  </span>
-                </>
+            {/* Prices */}
+            <div className="flex flex-col gap-1">
+              {apiData && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-400 font-medium">Precio público</span>
+                  <span className="text-sm text-gray-400 line-through">{formatMXN(apiData.priceCustomer)}</span>
+                </div>
               )}
+              {apiData && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-price-blue-700 font-semibold">Precio socio PS</span>
+                  <span className="text-base font-bold text-price-blue-800">{formatMXN(apiData.priceMember)}</span>
+                </div>
+              )}
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="text-2xl font-black text-price-blue-900 tracking-tight">{formatMXN(finalPrice)}</span>
+                {!apiData && discount > 0 && (
+                  <span className="text-sm text-gray-400 line-through font-medium">{formatMXN(selectedProduct.price)}</span>
+                )}
+                {(apiData ? totalSavingsPct > 0 : discount > 0) && (
+                  <span className="text-xs font-black text-white bg-price-pink-600 px-2 py-0.5 rounded-full uppercase tracking-tight">
+                    {apiData ? totalSavingsPct : discount}% OFF
+                  </span>
+                )}
+              </div>
             </div>
 
             {discount > 0 && (
               <div className="bg-price-blue-50 border border-price-blue-100 rounded-2xl px-4 py-3 flex items-center gap-2">
                 <span className="text-sm">💎</span>
                 <span className="text-sm font-bold text-price-blue-900">
-                  Beneficio Exclusivo: {discount}% OFF aplicado
+                  {apiData
+                    ? `Precio público $${apiData.priceCustomer.toFixed(0)} → tu precio $${finalPrice} (${totalSavingsPct}% OFF)`
+                    : `Beneficio Exclusivo: ${discount}% OFF aplicado`}
                 </span>
+              </div>
+            )}
+
+            {/* Sizes */}
+            {apiData?.sizes && apiData.sizes.length > 0 && (
+              <div>
+                <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-3">Talla</h3>
+                <div className="flex flex-wrap gap-2">
+                  {apiData.sizes.map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(selectedSize === size ? null : size)}
+                      className={`px-3 py-1.5 rounded-xl text-sm font-semibold border-2 transition-all ${
+                        selectedSize === size
+                          ? "border-price-blue-900 bg-price-blue-900 text-white"
+                          : "border-gray-200 text-gray-700 hover:border-price-blue-300"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 
             <div>
               <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-3">Descripción</h3>
               <p className="text-sm text-gray-500 leading-relaxed">
-                {selectedProduct.name} es un producto de alta calidad en la categoría de {(selectedProduct.category ?? "producto").toLowerCase()}.
-                Diseñado para ofrecer el mejor rendimiento y durabilidad. Ideal para usuarios que buscan excelencia y valor.
+                {selectedProduct.description ?? `${selectedProduct.name} es un producto de alta calidad en la categoría de ${(selectedProduct.category ?? "producto").toLowerCase()}.`}
               </p>
+              <div className="flex flex-wrap gap-x-4 gap-y-0.5 mt-2">
+                {selectedProduct.brand && (
+                  <p className="text-xs text-gray-400">Marca: <span className="font-semibold text-gray-600">{selectedProduct.brand}</span></p>
+                )}
+                {selectedProduct.sku && (
+                  <p className="text-xs text-gray-400">SKU: <span className="font-mono text-gray-500">{selectedProduct.sku}</span></p>
+                )}
+                {apiData?.material && (
+                  <p className="text-xs text-gray-400">Material: <span className="font-semibold text-gray-600">{apiData.material}</span></p>
+                )}
+                {apiData?.color && (
+                  <p className="text-xs text-gray-400">Color: <span className="font-semibold text-gray-600">{apiData.color}</span></p>
+                )}
+              </div>
             </div>
 
             <div>
               <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-3">Características</h3>
               <ul className="flex flex-col gap-2">
-                {["Calidad premium garantizada", "Envío inmediato disponible", "Garantía de satisfacción", "Soporte técnico incluido"].map((feat) => (
+                {(selectedProduct.features ?? ["Calidad premium garantizada", "Envío inmediato disponible", "Garantía de satisfacción"]).map((feat) => (
                   <li key={feat} className="flex items-center gap-2.5">
                     <span className="w-5 h-5 rounded-lg bg-price-pink-600/10 flex items-center justify-center flex-shrink-0">
                       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#db2777" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -171,6 +257,13 @@ export default function ProductDetailView() {
                 ))}
               </ul>
             </div>
+
+            {apiLoading && (
+              <div className="flex items-center gap-2 text-xs text-gray-400">
+                <div className="w-3 h-3 rounded-full border-2 border-gray-300 border-t-price-blue-500 animate-spin" />
+                Cargando datos actualizados…
+              </div>
+            )}
 
             <div>
               <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-3">Cantidad</h3>
@@ -202,7 +295,7 @@ export default function ProductDetailView() {
                 .map((product) => (
                   <button
                     key={product.id}
-                    onClick={() => { dispatch({ type: "SELECT_PRODUCT", payload: product }); setSelectedImage(0); setQuantity(1) }}
+                    onClick={() => selectRelated(product)}
                     className="flex-shrink-0 w-36 bg-white rounded-[1.5rem] border border-gray-100 p-2.5 shadow-sm active:scale-95 transition-transform"
                   >
                     <div className="w-full aspect-square bg-gray-50 rounded-xl mb-2 overflow-hidden">
@@ -307,7 +400,7 @@ export default function ProductDetailView() {
                 <div className="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm">
                   <div className="aspect-square relative bg-gray-50">
                     {selectedProduct.image ? (
-                      <Image src={productImages[selectedImage] ?? ""} alt={selectedProduct.name} fill className="object-cover" unoptimized />
+                      <Image src={productImages[selectedImage] ?? ""} alt={selectedProduct.name} fill className="object-contain" unoptimized />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-8xl">
                         {categoryEmoji(selectedProduct.category)}
@@ -339,43 +432,112 @@ export default function ProductDetailView() {
               {/* Product info */}
               <div className="flex flex-col gap-6">
                 <div>
-                  <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-[0.2em] mb-2">{selectedProduct.category}</p>
+                  <div className="flex items-center gap-2 mb-2">
+                    <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-[0.2em]">{selectedProduct.category}</p>
+                    {apiData?.labels?.map((label) => (
+                      <span key={label} className="text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 px-2 py-0.5 rounded-full">
+                        {label}
+                      </span>
+                    ))}
+                    {!apiData?.outOfStock && apiData?.inStock && (
+                      <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                        En stock
+                      </span>
+                    )}
+                    {apiData?.outOfStock && (
+                      <span className="text-[9px] font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">
+                        Agotado
+                      </span>
+                    )}
+                  </div>
                   <h1 className="text-4xl font-black text-gray-900 tracking-tight leading-tight">{selectedProduct.name}</h1>
                 </div>
 
-                <div className="flex items-baseline gap-3">
-                  <span className="text-4xl font-black text-price-blue-900 tracking-tighter">{formatMXN(finalPrice)}</span>
-                  {discount > 0 && (
-                    <>
-                      <span className="text-lg text-gray-400 line-through font-medium">{formatMXN(selectedProduct.price)}</span>
-                      <span className="text-xs font-black text-white bg-price-pink-600 px-3 py-1 rounded-full uppercase tracking-tight">
-                        {discount}% OFF
-                      </span>
-                    </>
+                {/* Prices */}
+                <div className="flex flex-col gap-1.5">
+                  {apiData && (
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm text-gray-400 font-medium">Precio público</span>
+                      <span className="text-base text-gray-400 line-through">{formatMXN(apiData.priceCustomer)}</span>
+                    </div>
                   )}
+                  {apiData && (
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm text-price-blue-700 font-semibold">Precio socio PS</span>
+                      <span className="text-xl font-bold text-price-blue-800">{formatMXN(apiData.priceMember)}</span>
+                    </div>
+                  )}
+                  <div className="flex items-baseline gap-3 mt-1">
+                    <span className="text-4xl font-black text-price-blue-900 tracking-tighter">{formatMXN(finalPrice)}</span>
+                    {!apiData && discount > 0 && (
+                      <span className="text-lg text-gray-400 line-through font-medium">{formatMXN(selectedProduct.price)}</span>
+                    )}
+                    {(apiData ? totalSavingsPct > 0 : discount > 0) && (
+                      <span className="text-xs font-black text-white bg-price-pink-600 px-3 py-1 rounded-full uppercase tracking-tight">
+                        {apiData ? totalSavingsPct : discount}% OFF
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {discount > 0 && (
                   <div className="bg-price-blue-50 border border-price-blue-100 rounded-2xl px-5 py-3.5 flex items-center gap-3">
                     <span className="text-lg">💎</span>
                     <span className="text-sm font-bold text-price-blue-900">
-                      Beneficio Exclusivo: {discount}% OFF aplicado
+                      {apiData
+                        ? `Precio público $${apiData.priceCustomer.toFixed(0)} → tu precio $${finalPrice} (${totalSavingsPct}% total OFF)`
+                        : `Beneficio Exclusivo: ${discount}% OFF aplicado`}
                     </span>
+                  </div>
+                )}
+
+                {/* Sizes */}
+                {apiData?.sizes && apiData.sizes.length > 0 && (
+                  <div>
+                    <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Talla</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {apiData.sizes.map((size) => (
+                        <button
+                          key={size}
+                          onClick={() => setSelectedSize(selectedSize === size ? null : size)}
+                          className={`px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-all ${
+                            selectedSize === size
+                              ? "border-price-blue-900 bg-price-blue-900 text-white"
+                              : "border-gray-200 text-gray-700 hover:border-price-blue-300"
+                          }`}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
 
                 <div>
                   <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Descripción</h3>
                   <p className="text-gray-600 leading-relaxed">
-                    {selectedProduct.name} es un producto de alta calidad en la categoría de {(selectedProduct.category ?? "producto").toLowerCase()}.
-                    Diseñado para ofrecer el mejor rendimiento y durabilidad. Ideal para usuarios que buscan excelencia y valor.
+                    {selectedProduct.description ?? `${selectedProduct.name} es un producto de alta calidad en la categoría de ${(selectedProduct.category ?? "producto").toLowerCase()}.`}
                   </p>
+                  <div className="flex flex-wrap gap-x-5 gap-y-1 mt-2">
+                    {selectedProduct.brand && (
+                      <p className="text-xs text-gray-400">Marca: <span className="font-semibold text-gray-600">{selectedProduct.brand}</span></p>
+                    )}
+                    {selectedProduct.sku && (
+                      <p className="text-xs text-gray-400">SKU: <span className="font-mono text-gray-500">{selectedProduct.sku}</span></p>
+                    )}
+                    {apiData?.material && (
+                      <p className="text-xs text-gray-400">Material: <span className="font-semibold text-gray-600">{apiData.material}</span></p>
+                    )}
+                    {apiData?.color && (
+                      <p className="text-xs text-gray-400">Color: <span className="font-semibold text-gray-600">{apiData.color}</span></p>
+                    )}
+                  </div>
                 </div>
 
                 <div>
                   <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Características principales</h3>
                   <ul className="flex flex-col gap-3">
-                    {["Calidad premium garantizada", "Envío inmediato disponible", "Garantía de satisfacción", "Soporte técnico incluido"].map((feat) => (
+                    {(selectedProduct.features ?? ["Calidad premium garantizada", "Envío inmediato disponible", "Garantía de satisfacción"]).map((feat) => (
                       <li key={feat} className="flex items-center gap-3">
                         <span className="w-6 h-6 rounded-xl bg-price-pink-600/10 flex items-center justify-center flex-shrink-0">
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#db2777" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -387,6 +549,13 @@ export default function ProductDetailView() {
                     ))}
                   </ul>
                 </div>
+
+                {apiLoading && (
+                  <div className="flex items-center gap-2 text-xs text-gray-400">
+                    <div className="w-3 h-3 rounded-full border-2 border-gray-300 border-t-price-blue-500 animate-spin" />
+                    Cargando datos actualizados del producto…
+                  </div>
+                )}
 
                 <div>
                   <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Cantidad</h3>
@@ -447,10 +616,9 @@ export default function ProductDetailView() {
 
 function categoryEmoji(category?: string): string {
   switch (category) {
-    case "Electrónica": return "📱"
-    case "Computación": return "💻"
-    case "Audio": return "🎧"
-    case "Wearables": return "⌚"
+    case "Calzado": return "👟"
+    case "Ropa": return "👕"
+    case "Accesorios": return "👜"
     default: return "📦"
   }
 }
