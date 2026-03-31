@@ -31,10 +31,12 @@ export function usePriceShoeProduct(sku?: string) {
     setData(null)
 
     const token = process.env.NEXT_PUBLIC_PS_API_TOKEN
+    console.log("API Token:", token ? "PRESENTE" : "FALTANTE")
     const headers: HeadersInit = token
       ? { Authorization: `Bearer ${token}` }
       : {}
 
+    console.log("Llamando API con headers:", headers)
     fetch(`https://api.priceshoes.digital/v1/search/products/${sku}`, { headers })
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
