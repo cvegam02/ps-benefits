@@ -38,6 +38,8 @@ jobs:
       - name: Build
         working-directory: demo-app
         run: npm run build
+        env:
+          NEXT_PUBLIC_PS_API_TOKEN: ${{ secrets.PS_API_TOKEN }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
