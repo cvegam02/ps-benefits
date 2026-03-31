@@ -119,12 +119,12 @@ export default function ProductDetailView() {
               <button
                 key={idx}
                 onClick={() => setSelectedImage(idx)}
-                className={`w-16 h-16 rounded-2xl overflow-hidden border-2 transition-all ${
+                className={`w-16 h-16 rounded-2xl overflow-hidden border-2 transition-all flex items-center justify-center ${
                   selectedImage === idx ? "border-price-blue-900 shadow-md shadow-price-blue-900/10" : "border-gray-100"
                 }`}
               >
                 {img ? (
-                  <Image src={img} alt="" width={64} height={64} className="w-full h-full object-cover" unoptimized />
+                  <Image src={img} alt="" width={64} height={64} className="w-full h-full object-contain" unoptimized />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-xl bg-gray-50">
                     {categoryEmoji(selectedProduct.category)}
@@ -404,12 +404,12 @@ export default function ProductDetailView() {
                     <button
                       key={idx}
                       onClick={() => setSelectedImage(idx)}
-                      className={`w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all ${
+                      className={`w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all flex items-center justify-center ${
                         selectedImage === idx ? "border-price-blue-900 shadow-md shadow-price-blue-900/10" : "border-gray-100 hover:border-gray-200"
                       }`}
                     >
                       {img ? (
-                        <Image src={img} alt="" width={80} height={80} className="w-full h-full object-cover" unoptimized />
+                        <Image src={img} alt="" width={80} height={80} className="w-full h-full object-contain" unoptimized />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-2xl bg-gray-50">
                           {categoryEmoji(selectedProduct.category)}
