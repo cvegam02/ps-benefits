@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 
 const CLOUDINARY_BASE =
-  "https://res.cloudinary.com/priceshoes/w_1120,q_auto:eco,fl_progressive,f_auto,e_trim,dpr_auto,w_256"
+  "https://res.cloudinary.com/priceshoes/w_750,q_auto:best,f_auto,e_trim"
 
 export type PriceShoeApiData = {
   sizes: string[]

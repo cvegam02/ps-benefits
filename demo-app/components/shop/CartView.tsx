@@ -1,7 +1,7 @@
 "use client"
 
 import { useApp } from "@/context/AppContext"
-import { tenants, formatMXN, getDiscountedPrice } from "@/lib/mock-data"
+import { tenants, formatMXN, getDiscountedPrice, getProductImageUrl } from "@/lib/mock-data"
 import Image from "next/image"
 
 export default function CartView() {
@@ -84,8 +84,8 @@ export default function CartView() {
                   <div key={item.product.id} className="bg-white rounded-[2rem] border border-gray-100 overflow-hidden shadow-sm shadow-black/[0.03] p-3">
                     <div className="flex gap-4">
                       <div className="relative flex-shrink-0 bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center" style={{ width: 80, height: 80 }}>
-                        {item.product.image ? (
-                          <Image src={item.product.image} alt={item.product.name} fill className="object-cover" unoptimized />
+                        {getProductImageUrl(item.product.image, "thumb") ? (
+                          <Image src={getProductImageUrl(item.product.image, "thumb")} alt={item.product.name} fill className="object-cover" unoptimized />
                         ) : (
                           <span className="text-2xl">📦</span>
                         )}
@@ -241,8 +241,8 @@ export default function CartView() {
                       return (
                         <div key={item.product.id} className="px-8 py-5 flex items-center gap-6 group hover:bg-gray-50/50 transition-colors">
                           <div className="relative w-20 h-20 rounded-2xl bg-gray-50 flex-shrink-0 overflow-hidden group-hover:bg-price-blue-50 transition-colors">
-                            {item.product.image ? (
-                              <Image src={item.product.image} alt={item.product.name} fill className="object-cover" unoptimized />
+                            {getProductImageUrl(item.product.image, "thumb") ? (
+                              <Image src={getProductImageUrl(item.product.image, "thumb")} alt={item.product.name} fill className="object-cover" unoptimized />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-3xl">📦</div>
                             )}

@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import { Order } from "@/lib/types"
-import { formatMXN, timeAgo } from "@/lib/mock-data"
+import { formatMXN, timeAgo, getProductImageUrl } from "@/lib/mock-data"
 import { useApp } from "@/context/AppContext"
 
 interface OrderDetailPanelProps {
@@ -119,8 +119,8 @@ export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelPro
                 return (
                   <div key={item.product.id} className="flex items-center gap-3">
                     <div className="relative w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
-                      {item.product.image && (
-                        <Image src={item.product.image} alt={item.product.name} fill className="object-cover" unoptimized />
+                      {getProductImageUrl(item.product.image, "thumb") && (
+                        <Image src={getProductImageUrl(item.product.image, "thumb")} alt={item.product.name} fill className="object-cover" unoptimized />
                       )}
                       <span className="absolute bottom-0 right-0 w-4 h-4 bg-price-blue-900 text-white text-[9px] font-bold flex items-center justify-center rounded-tl-md">
                         {item.quantity}

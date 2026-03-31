@@ -1,7 +1,7 @@
 "use client"
 
 import { useApp } from "@/context/AppContext"
-import { tenants, formatMXN, getDiscountedPrice } from "@/lib/mock-data"
+import { tenants, formatMXN, getDiscountedPrice, getProductImageUrl } from "@/lib/mock-data"
 import Image from "next/image"
 
 export default function CheckoutView() {
@@ -67,8 +67,8 @@ export default function CheckoutView() {
                 <div key={item.product.id} className="px-5 py-4 flex items-center gap-3 border-b border-gray-50 last:border-b-0">
                   {/* Thumbnail */}
                   <div className="relative w-14 h-14 rounded-2xl bg-gray-50 flex-shrink-0 overflow-hidden border border-gray-100">
-                    {item.product.image ? (
-                      <Image src={item.product.image} alt={item.product.name} fill className="object-cover" unoptimized />
+                    {getProductImageUrl(item.product.image, "thumb") ? (
+                      <Image src={getProductImageUrl(item.product.image, "thumb")} alt={item.product.name} fill className="object-cover" unoptimized />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-xl">📦</div>
                     )}
@@ -234,8 +234,8 @@ export default function CheckoutView() {
                         <div key={item.product.id} className="px-8 py-5 flex items-center justify-between group hover:bg-gray-50/50 transition-colors">
                           <div className="flex items-center gap-4">
                             <div className="relative w-14 h-14 rounded-2xl bg-gray-50 flex-shrink-0 overflow-hidden">
-                              {item.product.image ? (
-                                <Image src={item.product.image} alt={item.product.name} fill className="object-cover" unoptimized />
+                              {getProductImageUrl(item.product.image, "thumb") ? (
+                                <Image src={getProductImageUrl(item.product.image, "thumb")} alt={item.product.name} fill className="object-cover" unoptimized />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center text-2xl">📦</div>
                               )}
@@ -318,8 +318,8 @@ export default function CheckoutView() {
                       return (
                         <div key={item.product.id} className="flex items-center gap-3 py-1.5">
                           <div className="relative w-10 h-10 rounded-xl bg-gray-50 flex-shrink-0 overflow-hidden border border-gray-100">
-                            {item.product.image ? (
-                              <Image src={item.product.image} alt={item.product.name} fill className="object-cover" unoptimized />
+                            {getProductImageUrl(item.product.image, "thumb") ? (
+                              <Image src={getProductImageUrl(item.product.image, "thumb")} alt={item.product.name} fill className="object-cover" unoptimized />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-base">📦</div>
                             )}

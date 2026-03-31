@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useApp } from "@/context/AppContext"
-import { products, tenants, getDiscountedPrice, formatMXN } from "@/lib/mock-data"
+import { products, tenants, getDiscountedPrice, formatMXN, getProductImageUrl } from "@/lib/mock-data"
 import { Product } from "@/lib/types"
 import Image from "next/image"
 
@@ -436,8 +436,8 @@ function MobileProductCard({
           onClick={onDetail}
           className="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center group-hover:bg-price-blue-50 transition-colors mb-3"
         >
-          {product.image ? (
-            <Image src={product.image} alt={product.name} fill className="object-contain p-1" unoptimized />
+          {getProductImageUrl(product.image, "thumb") ? (
+            <Image src={getProductImageUrl(product.image, "thumb")} alt={product.name} fill className="object-contain p-1" unoptimized />
           ) : (
             <span className="text-4xl">{categoryEmoji(product.category)}</span>
           )}
@@ -494,8 +494,8 @@ function MobileProductCard({
           className="relative flex-shrink-0 bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center group-hover:bg-price-blue-50 transition-colors"
           style={{ width: 100, height: 100 }}
         >
-          {product.image ? (
-            <Image src={product.image} alt={product.name} fill className="object-contain p-1" unoptimized />
+          {getProductImageUrl(product.image, "thumb") ? (
+            <Image src={getProductImageUrl(product.image, "thumb")} alt={product.name} fill className="object-contain p-1" unoptimized />
           ) : (
             <span className="text-3xl">{categoryEmoji(product.category)}</span>
           )}
@@ -572,8 +572,8 @@ function DesktopProductCard({
     <div className="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden flex flex-col p-4 shadow-sm hover:shadow-2xl hover:shadow-price-blue-900/10 transition-all duration-500 group">
       {/* Image */}
       <button onClick={onDetail} className="relative w-full bg-gray-50 rounded-[2rem] overflow-hidden flex items-center justify-center mb-5 group-hover:bg-price-blue-50 transition-colors" style={{ height: 220 }}>
-        {product.image ? (
-          <Image src={product.image} alt={product.name} fill className="object-contain p-3 transition-transform duration-700" unoptimized />
+        {getProductImageUrl(product.image, "thumb") ? (
+          <Image src={getProductImageUrl(product.image, "thumb")} alt={product.name} fill className="object-contain p-3 transition-transform duration-700" unoptimized />
         ) : (
           <span className="text-7xl group-hover:scale-125 transition-transform duration-700">{categoryEmoji(product.category)}</span>
         )}

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useApp } from "@/context/AppContext"
-import { products, tenants, getDiscountedPrice, formatMXN } from "@/lib/mock-data"
+import { products, tenants, getDiscountedPrice, formatMXN, getProductImageUrl } from "@/lib/mock-data"
 import { usePriceShoeProduct } from "@/lib/usePriceShoeProduct"
 import Image from "next/image"
 
@@ -27,20 +27,17 @@ export default function ProductDetailView() {
     return null
   }
 
-  // Prices: prefer API data, fall back to mock price
-  const baseCustomerPrice = apiData?.priceCustomer ?? selectedProduct.price
-  const baseMemberPrice = apiData?.priceMember ?? selectedProduct.price
-  const finalPrice = getDiscountedPrice(baseMemberPrice, discount)
-  const totalSavingsPct = baseCustomerPrice > 0
-    ? Math.round(((baseCustomerPrice - finalPrice) / baseCustomerPrice) * 100)
+  // Prices: use base price from API/mock, apply only our tenant discount
+  const basePrice = apiData?.priceCustomer ?? selectedProduct.price
+  const finalPrice = getDiscountedPrice(basePrice, discount)
+  const totalSavingsPct = basePrice > 0
+    ? Math.round(((basePrice - finalPrice) / basePrice) * 100)
     : discount
 
-  // Images: prefer API images array, fall back to mock image
-  const productImages: string[] = apiData?.images?.length
-    ? apiData.images
-    : selectedProduct.image
-    ? [selectedProduct.image]
-    : []
+  // Images: only use API images
+  const apiImages = apiData?.images?.length ? apiData.images : []
+  const productImages = apiImages
+  const thumbnailImages = apiImages
 
   function addToCart() {
     for (let i = 0; i < quantity; i++) {
@@ -107,7 +104,7 @@ export default function ProductDetailView() {
         <div className="flex-1 overflow-y-auto pb-36">
           {/* Image gallery */}
           <div className="relative bg-gray-100 aspect-square">
-            {selectedProduct.image ? (
+            {getProductImageUrl(selectedProduct.image, "full") ? (
               <Image src={productImages[selectedImage] ?? ""} alt={selectedProduct.name} fill className="object-contain" unoptimized />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-6xl">
@@ -118,7 +115,7 @@ export default function ProductDetailView() {
 
           {/* Thumbnails */}
           <div className="flex gap-2 p-4 bg-white border-b border-gray-100">
-            {productImages.map((img, idx) => (
+            {thumbnailImages.map((img, idx) => (
               <button
                 key={idx}
                 onClick={() => setSelectedImage(idx)}
@@ -169,12 +166,6 @@ export default function ProductDetailView() {
                   <span className="text-sm text-gray-400 line-through">{formatMXN(apiData.priceCustomer)}</span>
                 </div>
               )}
-              {apiData && (
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-price-blue-700 font-semibold">Precio socio PS</span>
-                  <span className="text-base font-bold text-price-blue-800">{formatMXN(apiData.priceMember)}</span>
-                </div>
-              )}
               <div className="flex items-baseline gap-2 mt-1">
                 <span className="text-2xl font-black text-price-blue-900 tracking-tight">{formatMXN(finalPrice)}</span>
                 {!apiData && discount > 0 && (
@@ -193,7 +184,7 @@ export default function ProductDetailView() {
                 <span className="text-sm">💎</span>
                 <span className="text-sm font-bold text-price-blue-900">
                   {apiData
-                    ? `Precio público $${apiData.priceCustomer.toFixed(0)} → tu precio $${finalPrice} (${totalSavingsPct}% OFF)`
+                    ? `Precio catálogo $${apiData.priceCustomer.toFixed(0)} → tu precio $${formatMXN(finalPrice)} (${totalSavingsPct}% OFF)`
                     : `Beneficio Exclusivo: ${discount}% OFF aplicado`}
                 </span>
               </div>
@@ -299,8 +290,8 @@ export default function ProductDetailView() {
                     className="flex-shrink-0 w-36 bg-white rounded-[1.5rem] border border-gray-100 p-2.5 shadow-sm active:scale-95 transition-transform"
                   >
                     <div className="w-full aspect-square bg-gray-50 rounded-xl mb-2 overflow-hidden">
-                      {product.image ? (
-                        <Image src={product.image} alt="" width={128} height={128} className="w-full h-full object-cover" unoptimized />
+                      {getProductImageUrl(product.image, "thumb") ? (
+                        <Image src={getProductImageUrl(product.image, "thumb")} alt="" width={128} height={128} className="w-full h-full object-cover" unoptimized />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-2xl">{categoryEmoji(product.category)}</div>
                       )}
@@ -399,7 +390,7 @@ export default function ProductDetailView() {
               <div className="flex flex-col gap-4">
                 <div className="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm">
                   <div className="aspect-square relative bg-gray-50">
-                    {selectedProduct.image ? (
+                    {getProductImageUrl(selectedProduct.image, "full") ? (
                       <Image src={productImages[selectedImage] ?? ""} alt={selectedProduct.name} fill className="object-contain" unoptimized />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-8xl">
@@ -409,7 +400,7 @@ export default function ProductDetailView() {
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  {productImages.map((img, idx) => (
+                  {thumbnailImages.map((img, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedImage(idx)}
@@ -457,14 +448,8 @@ export default function ProductDetailView() {
                 <div className="flex flex-col gap-1.5">
                   {apiData && (
                     <div className="flex items-center gap-3">
-                      <span className="text-sm text-gray-400 font-medium">Precio público</span>
+                      <span className="text-sm text-gray-400 font-medium">Precio catálogo</span>
                       <span className="text-base text-gray-400 line-through">{formatMXN(apiData.priceCustomer)}</span>
-                    </div>
-                  )}
-                  {apiData && (
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm text-price-blue-700 font-semibold">Precio socio PS</span>
-                      <span className="text-xl font-bold text-price-blue-800">{formatMXN(apiData.priceMember)}</span>
                     </div>
                   )}
                   <div className="flex items-baseline gap-3 mt-1">
@@ -485,7 +470,7 @@ export default function ProductDetailView() {
                     <span className="text-lg">💎</span>
                     <span className="text-sm font-bold text-price-blue-900">
                       {apiData
-                        ? `Precio público $${apiData.priceCustomer.toFixed(0)} → tu precio $${finalPrice} (${totalSavingsPct}% total OFF)`
+                        ? `Precio catálogo $${apiData.priceCustomer.toFixed(0)} → tu precio $${formatMXN(finalPrice)} (${totalSavingsPct}% OFF)`
                         : `Beneficio Exclusivo: ${discount}% OFF aplicado`}
                     </span>
                   </div>

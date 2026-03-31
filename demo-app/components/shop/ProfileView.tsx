@@ -1,7 +1,7 @@
 "use client"
 
 import { useApp } from "@/context/AppContext"
-import { tenants, formatMXN, timeAgo } from "@/lib/mock-data"
+import { tenants, formatMXN, timeAgo, getProductImageUrl } from "@/lib/mock-data"
 import { Order } from "@/lib/types"
 
 const STATUS_CONFIG = {
@@ -39,8 +39,8 @@ function OrderCard({ order }: { order: Order }) {
         {order.items.map((item) => (
           <div key={item.product.id} className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-gray-100 overflow-hidden flex-shrink-0">
-              {item.product.image ? (
-                <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
+              {getProductImageUrl(item.product.image, "thumb") ? (
+                <img src={getProductImageUrl(item.product.image, "thumb")} alt={item.product.name} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
