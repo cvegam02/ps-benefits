@@ -37,15 +37,16 @@ jobs:
 
       - name: Debug - Check API Token
         run: |
-          echo "Token starts with: ${NEXT_PUBLIC_PS_API_TOKEN:0:10}"
-        env:
-          NEXT_PUBLIC_PS_API_TOKEN: ${{ secrets.NEXT_PUBLIC_PS_API_TOKEN }}
+          echo "Token from secret: '${{ secrets.NEXT_PUBLIC_PS_API_TOKEN }}'"
+
+      - name: Create env file
+        run: |
+          echo "NEXT_PUBLIC_PS_API_TOKEN='${{ secrets.NEXT_PUBLIC_PS_API_TOKEN }}'" > demo-app/.env.production.local
+          cat demo-app/.env.production.local
 
       - name: Build
         working-directory: demo-app
         run: npm run build
-        env:
-          NEXT_PUBLIC_PS_API_TOKEN: ${{ secrets.NEXT_PUBLIC_PS_API_TOKEN }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
