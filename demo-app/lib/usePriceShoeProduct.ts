@@ -1,9 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-
-const CLOUDINARY_BASE =
-  "https://res.cloudinary.com/priceshoes/w_750,q_auto:best,f_auto,e_trim"
+import { priceShoeData } from "./priceshoes-data"
 
 export type PriceShoeApiData = {
   sizes: string[]
@@ -30,38 +28,13 @@ export function usePriceShoeProduct(sku?: string) {
     setError(null)
     setData(null)
 
-    const token = process.env.NEXT_PUBLIC_PS_API_TOKEN
-    console.log("API Token:", token ? "PRESENTE" : "FALTANTE")
-    const headers: HeadersInit = token
-      ? { Authorization: `Bearer ${token}` }
-      : {}
-
-    console.log("Llamando API con headers:", headers)
-    fetch(`https://api.priceshoes.digital/v1/search/products/${sku}`, { headers })
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        return res.json()
-      })
-      .then((json) => {
-        setData({
-          sizes: json.sizes ?? [],
-          color: (json.color ?? "").split("|")[0],
-          material: json.material ?? "",
-          inStock: json.inventory === true && !json.out_of_stock,
-          outOfStock: json.out_of_stock === true,
-          images: (json.images ?? []).map(
-            (path: string) => `${CLOUDINARY_BASE}${path}`
-          ),
-          priceCustomer: json.price_customer ?? 0,
-          priceMember: json.price_member ?? 0,
-          labels: json.labels ?? [],
-          darkstoreInventory: json.darkstore_inventory ?? 0,
-        })
-      })
-      .catch((err: unknown) => {
-        setError(err instanceof Error ? err.message : "Error al cargar")
-      })
-      .finally(() => setLoading(false))
+    const cached = priceShoeData[sku]
+    if (cached) {
+      setData(cached)
+    } else {
+      setError("Producto no encontrado")
+    }
+    setLoading(false)
   }, [sku])
 
   return { data, loading, error }
