@@ -1,9 +1,8 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { useApp } from "@/context/AppContext"
-import { useScrollHide } from "@/hooks/useScrollHide"
-import { BottomNav } from "@/components/shop/BottomNav"
+import { MobileMenuSheet } from "@/components/shop/MobileMenuSheet"
 import { products, tenants, getDiscountedPrice, formatMXN, getProductImageUrl } from "@/lib/mock-data"
 import { Product } from "@/lib/types"
 import Image from "next/image"
@@ -30,8 +29,7 @@ export default function CatalogView() {
   const tenantName = tenant?.name ?? "Price Shoes Benefits"
 
   const cartCount = state.cart.reduce((sum, i) => sum + i.quantity, 0)
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const navHidden = useScrollHide(scrollRef)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const filtered = products.filter((p) => {
     const matchCat = !CATEGORY_MAP[activeCategory] || p.category === CATEGORY_MAP[activeCategory]
@@ -77,11 +75,21 @@ export default function CatalogView() {
                   <p className="text-white text-lg font-bold leading-none">{tenantName}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <button className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white active:scale-90 transition-transform">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-                </button>
-              </div>
+              <button
+                onClick={() => setMenuOpen(prev => !prev)}
+                className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center active:scale-90 transition-transform"
+                aria-label="Menú de navegación"
+              >
+                {menuOpen ? (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+                  </svg>
+                )}
+              </button>
             </div>
 
             <div className="relative group">
@@ -155,7 +163,7 @@ export default function CatalogView() {
         </div>
 
         {/* Product Grid */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 pb-32">
+        <div className="flex-1 overflow-y-auto px-4 pb-6">
           <div className={viewMode === "list" ? "flex flex-col gap-4" : "grid grid-cols-2 gap-4"}>
             {filtered.map((product) => (
               <MobileProductCard
@@ -172,11 +180,12 @@ export default function CatalogView() {
           </div>
         </div>
 
-        <BottomNav
+        <MobileMenuSheet
+          open={menuOpen}
           activeTab="catalog"
           cartCount={cartCount}
-          hidden={navHidden}
           onNavigate={(view) => dispatch({ type: "SET_VIEW", payload: view })}
+          onClose={() => setMenuOpen(false)}
         />
       </div>
 
