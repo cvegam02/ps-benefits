@@ -1,10 +1,8 @@
 "use client"
 
-import { useRef } from "react"
 import { useApp } from "@/context/AppContext"
 import { useState } from "react"
-import { useScrollHide } from "@/hooks/useScrollHide"
-import { BottomNav } from "@/components/shop/BottomNav"
+import { MobileMenuSheet } from "@/components/shop/MobileMenuSheet"
 
 const STORES = [
   {
@@ -78,8 +76,7 @@ function GoogleMapFrame({ store, overview }: { store: Store; overview: boolean }
 export default function StoresView() {
   const { state, dispatch } = useApp()
   const cartCount = state.cart.reduce((sum, i) => sum + i.quantity, 0)
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const navHidden = useScrollHide(scrollRef)
+  const [menuOpen, setMenuOpen] = useState(false)
   const [selectedStore, setSelectedStore] = useState<Store>(STORES[0])
   const [showList, setShowList] = useState(false)
   const [mapOverview, setMapOverview] = useState(true)
@@ -111,10 +108,21 @@ export default function StoresView() {
               <p className="text-white text-lg font-bold leading-none">Nuestras Tiendas</p>
             </div>
           </div>
-          <div className="bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/20">
-            <p className="text-[8px] font-bold text-price-blue-300 uppercase tracking-widest leading-none mb-0.5">Hermosillo</p>
-            <p className="text-white text-[10px] font-bold leading-none">Sonora, MX</p>
-          </div>
+          <button
+            onClick={() => setMenuOpen(prev => !prev)}
+            className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center active:scale-90 transition-transform"
+            aria-label="Menú de navegación"
+          >
+            {menuOpen ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            )}
+          </button>
         </div>
       </div>
 
@@ -382,11 +390,12 @@ export default function StoresView() {
         </div>
       </div>
 
-      <BottomNav
+      <MobileMenuSheet
+        open={menuOpen}
         activeTab="stores"
         cartCount={cartCount}
-        hidden={navHidden}
         onNavigate={(view) => dispatch({ type: "SET_VIEW", payload: view })}
+        onClose={() => setMenuOpen(false)}
       />
     </div>
   )
