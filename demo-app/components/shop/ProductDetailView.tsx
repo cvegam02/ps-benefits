@@ -102,7 +102,7 @@ export default function ProductDetailView() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto pb-36">
+        <div className="flex-1 overflow-y-auto pb-6">
           {/* Image gallery */}
           <div className="relative bg-gray-100 aspect-square">
             {getProductImageUrl(selectedProduct.image, "full") ? (
@@ -275,6 +275,21 @@ export default function ProductDetailView() {
                 </button>
               </div>
             </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={addToCart}
+                className="flex-1 h-12 rounded-2xl border-2 border-gray-100 text-price-blue-900 text-xs font-black uppercase tracking-wider hover:bg-price-blue-50 hover:border-price-blue-200 transition-all active:scale-95"
+              >
+                Añadir al carrito
+              </button>
+              <button
+                onClick={buyNow}
+                className="flex-1 h-12 rounded-2xl bg-price-pink-600 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-price-pink-600/20 active:scale-95 transition-all"
+              >
+                Comprar Ahora
+              </button>
+            </div>
           </div>
 
           {/* Related products */}
@@ -306,23 +321,6 @@ export default function ProductDetailView() {
           </div>
         </div>
 
-        {/* Floating action bar */}
-        <div className="fixed bottom-0 left-0 right-0 md:hidden px-4 pb-5 pt-2 z-50">
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.12)] border border-white/60 px-4 py-3 flex gap-3">
-            <button
-              onClick={addToCart}
-              className="flex-1 h-12 rounded-2xl border-2 border-gray-100 text-price-blue-900 text-xs font-black uppercase tracking-wider hover:bg-price-blue-50 hover:border-price-blue-200 transition-all active:scale-95"
-            >
-              Añadir al carrito
-            </button>
-            <button
-              onClick={buyNow}
-              className="flex-1 h-12 rounded-2xl bg-price-pink-600 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-price-pink-600/20 active:scale-95 transition-all"
-            >
-              Comprar Ahora
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* ── DESKTOP ────────────────────────────────────────────────────── */}

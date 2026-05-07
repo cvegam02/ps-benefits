@@ -1,0 +1,270 @@
+<style>
+  :root { --blue: #1e3a8a; --pink: #db2777; }
+  .q-title { font-size: 1.1rem; font-weight: 700; color: #111; margin-bottom: 4px; }
+  .q-sub { font-size: 0.82rem; color: #6b7280; margin-bottom: 24px; }
+  .cards { display: flex; flex-direction: column; gap: 16px; }
+  .card {
+    border: 2px solid #e5e7eb; border-radius: 20px; overflow: hidden;
+    cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s; background: #fff;
+  }
+  .card:hover { border-color: var(--blue); box-shadow: 0 4px 20px rgba(30,58,138,0.1); }
+  .card.selected { border-color: var(--blue); box-shadow: 0 4px 20px rgba(30,58,138,0.15); }
+  .card-label {
+    background: var(--blue); color: white; font-size: 0.7rem; font-weight: 800;
+    letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 14px;
+  }
+  .card-body { padding: 16px; }
+  .card-inner { display: flex; gap: 16px; align-items: flex-start; }
+  .card-title { font-weight: 700; font-size: 0.95rem; color: #111; margin-bottom: 4px; }
+  .card-desc { font-size: 0.78rem; color: #6b7280; line-height: 1.5; }
+  .badge-rec {
+    display: inline-block; background: #d1fae5; color: #065f46;
+    font-size: 0.65rem; font-weight: 700; padding: 2px 8px;
+    border-radius: 100px; margin-left: 6px; text-transform: uppercase;
+  }
+
+  /* Phone shell */
+  .phone {
+    width: 180px; height: 320px; background: #f9fafb;
+    border-radius: 24px; border: 2px solid #e5e7eb; overflow: hidden;
+    position: relative; box-shadow: 0 8px 30px rgba(0,0,0,0.1); flex-shrink: 0;
+  }
+  .phone-header {
+    background: var(--blue); padding: 10px 10px 12px;
+  }
+  .phone-brand { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  .phone-logo {
+    width: 22px; height: 22px; background: rgba(255,255,255,0.15);
+    border-radius: 6px; display: flex; align-items: center; justify-content: center;
+  }
+  .phone-title { font-size: 9px; font-weight: 800; color: white; }
+  .ham-btn {
+    width: 22px; height: 22px; background: rgba(255,255,255,0.2);
+    border-radius: 6px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 2.5px; margin-left: auto;
+  }
+  .ham-line { width: 10px; height: 1.5px; background: white; border-radius: 2px; }
+  .phone-search {
+    background: white; border-radius: 8px; padding: 5px 8px;
+    font-size: 7px; color: #9ca3af; display: flex; align-items: center; gap: 4px;
+  }
+  .phone-content { padding: 8px; display: flex; flex-direction: column; gap: 5px; }
+  .phone-card {
+    background: white; border-radius: 8px; padding: 7px;
+    display: flex; gap: 6px; align-items: center;
+  }
+  .phone-img { width: 28px; height: 28px; background: #f3f4f6; border-radius: 6px; flex-shrink: 0; }
+  .phone-name { font-size: 7px; font-weight: 700; color: #111; }
+  .phone-price { font-size: 7px; font-weight: 800; color: var(--blue); }
+
+  /* Option A: Bottom sheet overlay */
+  .overlay-bg {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.3);
+    display: flex; align-items: flex-end;
+  }
+  .bottom-sheet {
+    width: 100%; background: white;
+    border-radius: 16px 16px 0 0;
+    padding: 10px 12px 14px;
+  }
+  .sheet-handle {
+    width: 28px; height: 3px; background: #e5e7eb;
+    border-radius: 2px; margin: 0 auto 10px;
+  }
+  .sheet-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 6px; border-radius: 8px;
+  }
+  .sheet-item.active { background: var(--blue); }
+  .sheet-icon {
+    width: 24px; height: 24px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    background: #f3f4f6; flex-shrink: 0;
+  }
+  .sheet-icon.active { background: rgba(255,255,255,0.2); }
+  .sheet-label { font-size: 8px; font-weight: 700; color: #374151; }
+  .sheet-label.active { color: white; }
+  .sheet-badge {
+    margin-left: auto; background: var(--pink);
+    color: white; font-size: 6px; font-weight: 800;
+    width: 14px; height: 14px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Option B: Side drawer */
+  .drawer-overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+  }
+  .drawer {
+    width: 65%; background: white;
+    padding: 12px 10px; height: 100%;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .drawer-header {
+    background: var(--blue); border-radius: 10px; padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+  .drawer-brand { font-size: 8px; font-weight: 800; color: white; }
+  .drawer-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 8px; border-radius: 8px;
+  }
+  .drawer-item.active { background: var(--blue); }
+
+  /* Option C: Dropdown from header */
+  .dropdown-overlay {
+    position: absolute; left: 0; right: 0; top: 72px;
+    background: rgba(0,0,0,0.15);
+  }
+  .dropdown-menu {
+    background: white; border-radius: 0 0 14px 14px;
+    padding: 6px 8px 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  }
+</style>
+
+<p class="q-title">¿Cómo se despliega el menú?</p>
+<p class="q-sub">Al tocar ≡ en el header, ¿qué animación y disposición se usa?</p>
+
+<div class="cards">
+
+  <!-- Option A: Bottom Sheet -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-label">A · Sheet desde abajo <span class="badge-rec">Recomendado</span></div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="phone">
+          <div class="phone-header">
+            <div class="phone-brand">
+              <div class="phone-logo">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="phone-title">ACME Corp</div>
+              <div class="ham-btn"><span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span></div>
+            </div>
+            <div class="phone-search">
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              ¿Qué estás buscando?
+            </div>
+          </div>
+          <div class="phone-content">
+            <div class="phone-card">
+              <div class="phone-img"></div>
+              <div><div class="phone-name">Nike Air Max</div><div class="phone-price">$2,890</div></div>
+            </div>
+            <div class="phone-card">
+              <div class="phone-img"></div>
+              <div><div class="phone-name">Camisa Oxford</div><div class="phone-price">$890</div></div>
+            </div>
+          </div>
+          <!-- Bottom sheet -->
+          <div class="overlay-bg">
+            <div class="bottom-sheet">
+              <div class="sheet-handle"></div>
+              <div class="sheet-item active">
+                <div class="sheet-icon active">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                </div>
+                <span class="sheet-label active">Inicio</span>
+              </div>
+              <div class="sheet-item">
+                <div class="sheet-icon">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <span class="sheet-label">Tiendas</span>
+              </div>
+              <div class="sheet-item">
+                <div class="sheet-icon">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+                </div>
+                <span class="sheet-label">Carrito</span>
+                <div class="sheet-badge">2</div>
+              </div>
+              <div class="sheet-item">
+                <div class="sheet-icon">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <span class="sheet-label">Cuenta</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="flex:1">
+          <div class="card-title">Bottom sheet</div>
+          <div class="card-desc">Se desliza desde abajo con fondo semitransparente. Consistente con el lenguaje visual actual (frosted glass, rounded). Fácil de alcanzar con el pulgar. Toque fuera cierra el menú.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option B: Side Drawer -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-label">B · Drawer lateral</div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="phone">
+          <div class="phone-header">
+            <div class="phone-brand">
+              <div class="phone-logo">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="phone-title">ACME Corp</div>
+              <div class="ham-btn"><span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span></div>
+            </div>
+            <div class="phone-search">
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              ¿Qué estás buscando?
+            </div>
+          </div>
+          <div class="phone-content">
+            <div class="phone-card">
+              <div class="phone-img"></div>
+              <div><div class="phone-name">Nike Air Max</div><div class="phone-price">$2,890</div></div>
+            </div>
+          </div>
+          <!-- Drawer -->
+          <div class="drawer-overlay">
+            <div class="drawer">
+              <div class="drawer-header">
+                <div class="drawer-brand">Price Shoes Benefits</div>
+                <div style="font-size:6px;color:rgba(255,255,255,0.7);margin-top:2px">ACME Corp</div>
+              </div>
+              <div class="drawer-item active">
+                <div class="sheet-icon active">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                </div>
+                <span class="sheet-label active">Inicio</span>
+              </div>
+              <div class="drawer-item">
+                <div class="sheet-icon">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <span class="sheet-label">Tiendas</span>
+              </div>
+              <div class="drawer-item">
+                <div class="sheet-icon">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg>
+                </div>
+                <span class="sheet-label">Carrito <span style="color:var(--pink);font-size:7px;font-weight:800">(2)</span></span>
+              </div>
+              <div class="drawer-item">
+                <div class="sheet-icon">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <span class="sheet-label">Cuenta</span>
+              </div>
+            </div>
+            <div style="flex:1;"></div>
+          </div>
+        </div>
+        <div style="flex:1">
+          <div class="card-title">Drawer lateral</div>
+          <div class="card-desc">Se desliza desde la izquierda cubriendo parte de la pantalla. Permite añadir más opciones en el futuro (configuración, ayuda). Más espacio para etiquetas y contexto del usuario.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
