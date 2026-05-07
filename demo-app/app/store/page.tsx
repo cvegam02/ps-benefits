@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import { useApp } from "@/context/AppContext"
-import { Order, OrderStatus } from "@/lib/types"
+import { Order } from "@/lib/types"
 import { formatMXN, timeAgo } from "@/lib/mock-data"
 import OrderDetailPanel from "@/components/store/OrderDetailPanel"
 import ReadyConfirmationModal from "@/components/store/ReadyConfirmationModal"
