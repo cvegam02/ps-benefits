@@ -23,7 +23,7 @@ const NAV_ITEMS: {
     view: "catalog",
     label: "Inicio",
     icon: (active) => (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke={active ? "white" : "#6b7280"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
       </svg>
@@ -34,7 +34,7 @@ const NAV_ITEMS: {
     view: "stores",
     label: "Tiendas",
     icon: (active) => (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke={active ? "white" : "#6b7280"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
         <circle cx="12" cy="10" r="3"/>
@@ -46,7 +46,7 @@ const NAV_ITEMS: {
     view: "cart",
     label: "Carrito",
     icon: (active) => (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke={active ? "white" : "#6b7280"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
         <line x1="3" y1="6" x2="21" y2="6"/>
@@ -59,7 +59,7 @@ const NAV_ITEMS: {
     view: "profile",
     label: "Cuenta",
     icon: (active) => (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke={active ? "white" : "#6b7280"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
         <circle cx="12" cy="7" r="4"/>
@@ -102,25 +102,25 @@ export function MobileMenuSheet({ open, activeTab, cartCount, onNavigate, onClos
             <button
               key={tab}
               onClick={() => { onNavigate(view); onClose() }}
-              className={`w-full flex items-center gap-3 px-4 py-3 ${active ? "bg-price-blue-900/[0.06]" : ""}`}
+              className={`w-full flex items-center gap-4 px-5 py-4 ${active ? "bg-price-blue-900/[0.06]" : ""}`}
             >
-              <div className={`w-7 h-7 rounded-[8px] flex items-center justify-center flex-shrink-0 ${
+              <div className={`w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 ${
                 active ? "bg-price-blue-900" : "bg-gray-100"
               }`}>
                 {icon(active)}
               </div>
-              <span className={`text-[10px] font-bold flex-1 text-left ${
+              <span className={`text-sm font-bold flex-1 text-left ${
                 active ? "text-price-blue-900" : "text-gray-600"
               }`}>
                 {label}
               </span>
               {tab === "cart" && cartCount > 0 && (
-                <span className="w-4 h-4 rounded-full bg-price-pink-600 text-white text-[9px] font-black flex items-center justify-center">
-                  {cartCount}
+                <span className="w-5 h-5 rounded-full bg-price-pink-600 text-white text-[10px] font-black flex items-center justify-center">
+                  {cartCount > 9 ? "9+" : cartCount}
                 </span>
               )}
               {active && (
-                <div className="w-[6px] h-[6px] rounded-full bg-price-blue-900" />
+                <div className="w-2 h-2 rounded-full bg-price-blue-900" />
               )}
             </button>
           )
