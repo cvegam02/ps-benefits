@@ -90,11 +90,6 @@ export function MobileMenuSheet({ open, activeTab, cartCount, onNavigate, onClos
           <div className="w-8 h-[3px] bg-gray-200 rounded-full" />
         </div>
 
-        {/* Section label */}
-        <div className="px-4 pb-2 border-b border-gray-50">
-          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em]">Navegación</p>
-        </div>
-
         {/* Nav items */}
         {NAV_ITEMS.map(({ tab, view, label, icon }) => {
           const active = activeTab === tab
