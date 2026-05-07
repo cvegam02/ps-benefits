@@ -1,10 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useApp } from "@/context/AppContext"
+import { useScrollHide } from "@/hooks/useScrollHide"
+import { BottomNav } from "@/components/shop/BottomNav"
 import { products, tenants, getDiscountedPrice, formatMXN, getProductImageUrl } from "@/lib/mock-data"
 import { Product } from "@/lib/types"
 import Image from "next/image"
+import { PriceDisplay } from "@/components/ui/PriceDisplay"
 
 const CATEGORIES = ["Todos los productos", "Calzado", "Ropa", "Accesorios"]
 const CATEGORY_MAP: Record<string, string> = {
@@ -27,6 +30,8 @@ export default function CatalogView() {
   const tenantName = tenant?.name ?? "Price Shoes Benefits"
 
   const cartCount = state.cart.reduce((sum, i) => sum + i.quantity, 0)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const navHidden = useScrollHide(scrollRef)
 
   const filtered = products.filter((p) => {
     const matchCat = !CATEGORY_MAP[activeCategory] || p.category === CATEGORY_MAP[activeCategory]
@@ -150,7 +155,7 @@ export default function CatalogView() {
         </div>
 
         {/* Product Grid */}
-        <div className="flex-1 overflow-y-auto px-4 pb-32">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 pb-32">
           <div className={viewMode === "list" ? "flex flex-col gap-4" : "grid grid-cols-2 gap-4"}>
             {filtered.map((product) => (
               <MobileProductCard
@@ -167,67 +172,12 @@ export default function CatalogView() {
           </div>
         </div>
 
-        {/* Bottom Nav */}
-        <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-5 pt-2 pointer-events-none">
-          <div className="pointer-events-auto bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.12)] border border-white/60 px-3 py-2 flex items-center">
-
-            {/* Inicio */}
-            <button className="flex-1 flex flex-col items-center justify-center gap-1 py-1 group">
-              <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-price-blue-900 shadow-lg shadow-price-blue-900/30">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                </svg>
-              </div>
-              <span className="text-[10px] font-black text-price-blue-900 tracking-tight">Inicio</span>
-            </button>
-
-            {/* Tiendas */}
-            <button
-              onClick={() => dispatch({ type: "SET_VIEW", payload: "stores" })}
-              className="flex-1 flex flex-col items-center justify-center gap-1 py-1 group"
-            >
-              <div className="flex items-center justify-center w-10 h-10 rounded-2xl group-active:bg-gray-100 transition-colors">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 group-hover:text-gray-600 transition-colors">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
-              </div>
-              <span className="text-[10px] font-bold text-gray-400 tracking-tight group-hover:text-gray-600 transition-colors">Tiendas</span>
-            </button>
-
-            {/* Carrito */}
-            <button
-              onClick={() => dispatch({ type: "SET_VIEW", payload: "cart" })}
-              className="flex-1 flex flex-col items-center justify-center gap-1 py-1 group"
-            >
-              <div className="relative flex items-center justify-center w-10 h-10 rounded-2xl group-active:bg-gray-100 transition-colors">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 group-hover:text-gray-600 transition-colors">
-                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-                  <line x1="3" y1="6" x2="21" y2="6"/>
-                  <path d="M16 10a4 4 0 01-8 0"/>
-                </svg>
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-price-pink-600 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
-                    {cartCount}
-                  </span>
-                )}
-              </div>
-              <span className="text-[10px] font-bold text-gray-400 tracking-tight group-hover:text-gray-600 transition-colors">Carrito</span>
-            </button>
-
-            {/* Cuenta */}
-            <button onClick={() => dispatch({ type: "SET_VIEW", payload: "profile" })} className="flex-1 flex flex-col items-center justify-center gap-1 py-1 group">
-              <div className="flex items-center justify-center w-10 h-10 rounded-2xl group-active:bg-gray-100 transition-colors">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 group-hover:text-gray-600 transition-colors">
-                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-                  <circle cx="12" cy="7" r="4"/>
-                </svg>
-              </div>
-              <span className="text-[10px] font-bold text-gray-400 tracking-tight group-hover:text-gray-600 transition-colors">Cuenta</span>
-            </button>
-
-          </div>
-        </div>
+        <BottomNav
+          activeTab="catalog"
+          cartCount={cartCount}
+          hidden={navHidden}
+          onNavigate={(view) => dispatch({ type: "SET_VIEW", payload: view })}
+        />
       </div>
 
       {/* ── DESKTOP ────────────────────────────────────────────────────── */}
@@ -451,10 +401,10 @@ function MobileProductCard({
           </button>
 
           <div className="flex flex-col gap-1.5">
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-sm font-black text-price-blue-900 tracking-tight">{formatMXN(finalPrice)}</span>
+            <div className="flex flex-col gap-0.5">
+              <PriceDisplay amount={finalPrice} className="text-lg font-black text-price-blue-900 leading-none" />
               {discount > 0 && (
-                <span className="text-[10px] text-gray-400 line-through font-medium">{formatMXN(product.price)}</span>
+                <PriceDisplay amount={product.price} className="text-[11px] font-medium text-gray-400 line-through leading-none" />
               )}
             </div>
 
@@ -509,11 +459,10 @@ function MobileProductCard({
           </button>
 
           <div className="mt-auto flex flex-col gap-3">
-            {/* Price Row */}
-            <div className="flex items-baseline gap-2">
-              <span className="text-lg font-black text-price-blue-900 tracking-tight">{formatMXN(finalPrice)}</span>
+            <div className="flex flex-col gap-0.5">
+              <PriceDisplay amount={finalPrice} className="text-xl font-black text-price-blue-900 leading-none" />
               {discount > 0 && (
-                <span className="text-xs text-gray-400 line-through font-medium">{formatMXN(product.price)}</span>
+                <PriceDisplay amount={product.price} className="text-[11px] font-medium text-gray-400 line-through leading-none" />
               )}
             </div>
 
@@ -587,10 +536,10 @@ function DesktopProductCard({
         </button>
         
         <div className="mt-4 flex flex-col gap-4">
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-price-blue-900 tracking-tighter">{formatMXN(finalPrice)}</span>
+          <div className="flex flex-col gap-1">
+            <PriceDisplay amount={finalPrice} className="text-2xl font-black text-price-blue-900 leading-none" />
             {discount > 0 && (
-              <span className="text-sm text-gray-400 line-through font-medium">{formatMXN(product.price)}</span>
+              <PriceDisplay amount={product.price} className="text-xs font-medium text-gray-400 line-through leading-none" />
             )}
           </div>
           

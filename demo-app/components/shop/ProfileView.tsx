@@ -1,13 +1,16 @@
 "use client"
 
+import { useRef } from "react"
 import { useApp } from "@/context/AppContext"
 import { tenants, formatMXN, timeAgo, getProductImageUrl } from "@/lib/mock-data"
 import { Order } from "@/lib/types"
+import { useScrollHide } from "@/hooks/useScrollHide"
+import { BottomNav } from "@/components/shop/BottomNav"
 
 const STATUS_CONFIG = {
-  pendiente: { label: "Pendiente",  bg: "bg-amber-50",   text: "text-amber-700",  dot: "bg-amber-500"  },
-  listo:     { label: "Listo",      bg: "bg-blue-50",    text: "text-blue-700",   dot: "bg-blue-500"   },
-  entregado: { label: "Entregado",  bg: "bg-emerald-50", text: "text-emerald-700",dot: "bg-emerald-500"},
+  pendiente: { label: "Pendiente",  text: "text-amber-700",       iconBg: "bg-amber-500",       icon: "dot"   },
+  listo:     { label: "Listo",      text: "text-price-blue-900",  iconBg: "bg-price-blue-900",  icon: "check" },
+  entregado: { label: "Entregado",  text: "text-emerald-700",     iconBg: "bg-emerald-500",     icon: "check" },
 }
 
 const PAYMENT_LABELS: Record<string, string> = {
@@ -28,10 +31,14 @@ function OrderCard({ order }: { order: Order }) {
           <p className="text-xs font-black text-gray-900 leading-none mb-1">{order.id}</p>
           <p className="text-[10px] font-medium text-gray-400">{timeAgo(order.createdAt)}</p>
         </div>
-        <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl ${cfg.bg}`}>
-          <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
-          <p className={`text-[10px] font-bold ${cfg.text}`}>{cfg.label}</p>
-        </div>
+        <span className={`inline-flex items-center gap-[7px] text-[13px] font-bold leading-none ${cfg.text}`}>
+          <span className={`w-4 h-4 rounded-full flex items-center justify-center text-white flex-shrink-0 ${cfg.iconBg}`}>
+            {cfg.icon === "dot"
+              ? <svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="2" fill="currentColor"/></svg>
+              : <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="2,5 4,7 8,3"/></svg>}
+          </span>
+          {cfg.label}
+        </span>
       </div>
 
       {/* Products */}
@@ -76,6 +83,9 @@ export default function ProfileView() {
   const { state, dispatch } = useApp()
   const user = state.currentUser!
   const tenant = tenants.find((t) => t.id === user.tenantId)
+  const cartCount = state.cart.reduce((sum, i) => sum + i.quantity, 0)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const navHidden = useScrollHide(scrollRef)
 
   const myOrders = state.orders
     .filter((o) => o.userId === user.id)
@@ -171,7 +181,7 @@ export default function ProfileView() {
       </header>
 
       {/* ── CONTENT ───────────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto no-scrollbar">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto no-scrollbar">
         <div className="md:flex md:gap-0">
 
           {/* ── LEFT / MAIN COLUMN ──────────────────────────────────── */}
@@ -366,46 +376,12 @@ export default function ProfileView() {
         </div>
       </div>
 
-      {/* ── BOTTOM NAV (mobile) ───────────────────────────────────────── */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-5 pt-2 pointer-events-none md:hidden">
-        <div className="pointer-events-auto bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.12)] border border-white/60 px-3 py-2 flex items-center">
-          <button onClick={() => dispatch({ type: "SET_VIEW", payload: "catalog" })} className="flex-1 flex flex-col items-center justify-center gap-1 py-1 group">
-            <div className="flex items-center justify-center w-10 h-10 rounded-2xl group-active:bg-gray-100 transition-colors">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-              </svg>
-            </div>
-            <span className="text-[10px] font-bold text-gray-400 tracking-tight">Inicio</span>
-          </button>
-
-          <button onClick={() => dispatch({ type: "SET_VIEW", payload: "stores" })} className="flex-1 flex flex-col items-center justify-center gap-1 py-1 group">
-            <div className="flex items-center justify-center w-10 h-10 rounded-2xl group-active:bg-gray-100 transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
-              </svg>
-            </div>
-            <span className="text-[10px] font-bold text-gray-400 tracking-tight">Tiendas</span>
-          </button>
-
-          <button onClick={() => dispatch({ type: "SET_VIEW", payload: "cart" })} className="flex-1 flex flex-col items-center justify-center gap-1 py-1 group">
-            <div className="flex items-center justify-center w-10 h-10 rounded-2xl group-active:bg-gray-100 transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
-              </svg>
-            </div>
-            <span className="text-[10px] font-bold text-gray-400 tracking-tight">Carrito</span>
-          </button>
-
-          <button className="flex-1 flex flex-col items-center justify-center gap-1 py-1">
-            <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-price-blue-900 shadow-lg shadow-price-blue-900/30">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
-              </svg>
-            </div>
-            <span className="text-[10px] font-black text-price-blue-900 tracking-tight">Cuenta</span>
-          </button>
-        </div>
-      </div>
+      <BottomNav
+        activeTab="profile"
+        cartCount={cartCount}
+        hidden={navHidden}
+        onNavigate={(view) => dispatch({ type: "SET_VIEW", payload: view })}
+      />
     </div>
   )
 }
