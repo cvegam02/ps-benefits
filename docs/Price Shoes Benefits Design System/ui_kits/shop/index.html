@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Shop UI Kit · Price Shoes Benefits</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  :root {
+    --blue-900: #1e3a8a;
+    --pink-600: #db2777;
+    --pink-500: #ec4899;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #f3f4f6; font-family: 'Montserrat', sans-serif; color: var(--gray-900); }
+  .page { max-width: 1280px; margin: 0 auto; padding: 56px 32px 96px; }
+  .doc-head { margin-bottom: 48px; }
+  .doc-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--pink-600); margin-bottom: 8px; }
+  .doc-title { font-size: 40px; font-weight: 900; letter-spacing: -0.03em; margin: 0 0 8px; }
+  .doc-sub { color: var(--gray-500); max-width: 640px; line-height: 1.5; font-size: 15px; }
+
+  .section { margin-bottom: 64px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--gray-200); }
+  .section-head h2 { font-size: 13px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--blue-900); margin: 0; }
+  .section-head .count { font-size: 11px; color: var(--gray-400); font-weight: 600; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .grid.wide { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); }
+
+  .demo {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .demo-label { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-400); }
+  .demo-stage { display: flex; align-items: center; justify-content: center; min-height: 120px; padding: 16px; background: var(--gray-50); border-radius: 16px; }
+
+  /* ====== components ====== */
+
+  /* Buttons */
+  .btn-primary { padding: 14px 24px; border-radius: 16px; background: var(--pink-600); color: #fff; font: 900 11px/1 'Montserrat'; text-transform: uppercase; letter-spacing: 0.1em; border: none; cursor: pointer; box-shadow: 0 8px 24px rgba(219,39,119,0.25); transition: transform .15s; }
+  .btn-primary:active { transform: scale(0.95); }
+  .btn-blue { padding: 14px 24px; border-radius: 16px; background: var(--blue-900); color: #fff; font: 600 14px/1 'Montserrat'; border: none; cursor: pointer; box-shadow: 0 8px 24px rgba(30,58,138,0.25); transition: transform .15s; }
+  .btn-blue:active { transform: scale(0.95); }
+  .btn-secondary { padding: 13px 22px; border-radius: 16px; background: #fff; color: var(--blue-900); font: 900 12px/1 'Montserrat'; text-transform: uppercase; letter-spacing: 0.05em; border: 2px solid var(--gray-100); cursor: pointer; }
+  .btn-icon { width: 48px; height: 48px; border-radius: 16px; background: var(--blue-900); color: #fff; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; box-shadow: 0 8px 24px rgba(30,58,138,0.25); }
+  .btn-pill { padding: 8px 16px; border-radius: 9999px; background: #fff; color: var(--blue-900); font: 700 11px/1 'Montserrat'; border: 1px solid var(--gray-100); cursor: pointer; }
+  .btn-pill.active { background: var(--blue-900); color: #fff; border-color: var(--blue-900); }
+
+  /* Inputs */
+  .input { position: relative; }
+  .input-label { display: block; font: 700 11px/1 'Montserrat'; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 8px; padding-left: 4px; }
+  .input input { width: 100%; padding: 14px 16px 14px 44px; border-radius: 16px; background: var(--gray-50); border: 1px solid var(--gray-100); font: 500 13px/1 'Montserrat'; outline: none; }
+  .input input:focus { background: #fff; border: 2px solid #3b82f6; padding: 13px 16px 13px 43px; box-shadow: 0 0 0 4px rgba(59,130,246,0.12); }
+  .input .icon { position: absolute; left: 16px; top: 38px; color: var(--gray-400); }
+
+  /* Status — icon + label, no container (canonical) */
+  .status { display: inline-flex; align-items: center; gap: 7px; font: 700 13px/1 'Montserrat'; letter-spacing: -0.005em; }
+  .status .ic { width: 16px; height: 16px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
+  .status.pending { color: #b45309; }
+  .status.pending .ic { background: #f59e0b; }
+  .status.ready { color: var(--blue-900); }
+  .status.ready .ic { background: var(--blue-900); }
+  .status.delivered { color: #047857; }
+  .status.delivered .ic { background: #10b981; }
+  .status.cancelled { color: #9ca3af; }
+  .status.cancelled .ic { background: #9ca3af; }
+  .discount-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 9999px; font: 700 13px/1 'Montserrat'; color: #fff; background: linear-gradient(90deg, var(--pink-600), var(--pink-500)); box-shadow: 0 8px 24px rgba(219,39,119,0.25); }
+  .diamond-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 8px; font: 700 11px/1 'Montserrat'; background: #fdf2f8; color: var(--pink-600); border: 1px solid #fce7f3; }
+
+  /* Product card */
+  .product-card { background: #fff; border: 1px solid var(--gray-100); border-radius: 32px; padding: 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); width: 100%; max-width: 240px; }
+  .product-card .img { aspect-ratio: 1; background: var(--gray-50); border-radius: 24px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; }
+  .product-card .img img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+  .product-card .img .badge-on-img { position: absolute; top: 8px; left: 8px; }
+  .product-card .meta-eyebrow { font: 700 9px/1 'Montserrat'; letter-spacing: 0.2em; text-transform: uppercase; color: var(--pink-600); }
+  .product-card .name { font: 700 13px/1.2 'Montserrat'; color: var(--gray-900); }
+  .product-card .price-row { display: flex; align-items: baseline; gap: 6px; }
+  .product-card .price { font: 900 18px/1 'Montserrat'; letter-spacing: -0.04em; color: var(--blue-900); }
+  .product-card .strike { font: 500 11px/1 'Montserrat'; color: var(--gray-400); text-decoration: line-through; }
+  .product-card .cta { padding: 8px 0; border-radius: 10px; background: var(--pink-600); color: #fff; font: 900 9px/1 'Montserrat'; text-transform: uppercase; letter-spacing: 0.05em; text-align: center; box-shadow: 0 4px 12px rgba(219,39,119,0.2); border: none; cursor: pointer; }
+
+  /* Bottom nav */
+  .bnav { background: #fff; border-radius: 24px; padding: 8px; display: grid; grid-template-columns: repeat(4,1fr); gap: 4px; box-shadow: 0 12px 40px rgba(0,0,0,0.08); border: 1px solid var(--gray-100); width: 100%; max-width: 360px; }
+  .bnav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 0; border-radius: 16px; color: var(--gray-400); font: 700 9px/1 'Montserrat'; letter-spacing: 0.1em; text-transform: uppercase; }
+  .bnav-item.active { background: var(--blue-900); color: #fff; }
+
+  /* Header bar */
+  .header-bar { background: var(--blue-900); border-radius: 24px; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; color: #fff; width: 100%; max-width: 360px; }
+  .header-bar .lockup { display: flex; align-items: center; gap: 10px; }
+  .header-bar .icon-shell { width: 36px; height: 36px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; }
+  .header-bar .titles { line-height: 1; }
+  .header-bar .eyebrow { font: 700 8px/1 'Montserrat'; letter-spacing: 0.2em; color: #93c5fd; }
+  .header-bar .name { font: 900 14px/1 'Montserrat'; letter-spacing: -0.02em; margin-top: 4px; }
+  .header-bar .actions { display: flex; gap: 8px; }
+  .header-bar .icon-btn { width: 36px; height: 36px; border-radius: 12px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; }
+
+  /* Cart row */
+  .cart-row { background: #fff; border: 1px solid var(--gray-100); border-radius: 20px; padding: 12px; display: flex; gap: 12px; align-items: center; width: 100%; max-width: 380px; }
+  .cart-row .thumb { width: 60px; height: 60px; border-radius: 14px; background: var(--gray-50); flex-shrink: 0; overflow: hidden; }
+  .cart-row .thumb img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+  .cart-row .info { flex: 1; min-width: 0; }
+  .cart-row .info .name { font: 700 13px/1.2 'Montserrat'; color: var(--gray-900); }
+  .cart-row .info .meta { font: 500 11px/1 'Montserrat'; color: var(--gray-500); margin-top: 4px; }
+  .cart-row .price { font: 900 16px/1 'Montserrat'; color: var(--blue-900); letter-spacing: -0.04em; }
+  .qty { display: inline-flex; align-items: center; gap: 0; background: var(--gray-50); border-radius: 12px; padding: 2px; }
+  .qty button { width: 24px; height: 24px; border-radius: 8px; background: #fff; border: 1px solid var(--gray-100); font: 700 12px/1 'Montserrat'; color: var(--blue-900); cursor: pointer; }
+  .qty span { padding: 0 10px; font: 700 12px/1 'Montserrat'; color: var(--gray-900); }
+
+  /* Category chip */
+  .cat-chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 9999px; background: #fff; border: 1px solid var(--gray-100); font: 700 12px/1 'Montserrat'; color: var(--gray-700); cursor: pointer; }
+  .cat-chip.active { background: var(--blue-900); color: #fff; border-color: var(--blue-900); }
+  .cat-chip .emoji { font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="doc-head">
+    <div class="doc-eyebrow">UI KIT · CONSUMER SHOP</div>
+    <h1 class="doc-title">Price Shoes Benefits — Shop</h1>
+    <p class="doc-sub">Mobile-first employee discount portal. Deep navy + hot pink, generous radii, Montserrat 800/900 for prices and headlines, signature uppercase wide-tracked overlines.</p>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="section">
+    <div class="section-head"><h2>Buttons</h2><span class="count">5 variants</span></div>
+    <div class="grid">
+      <div class="demo"><span class="demo-label">Primary CTA — pink</span><div class="demo-stage"><button class="btn-primary">Comprar Ahora</button></div></div>
+      <div class="demo"><span class="demo-label">Primary action — blue</span><div class="demo-stage"><button class="btn-blue">Iniciar Sesión</button></div></div>
+      <div class="demo"><span class="demo-label">Secondary outline</span><div class="demo-stage"><button class="btn-secondary">Añadir al carrito</button></div></div>
+      <div class="demo"><span class="demo-label">Icon button</span><div class="demo-stage"><button class="btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></button></div></div>
+      <div class="demo"><span class="demo-label">Pill / filter</span><div class="demo-stage" style="gap:6px; display:flex"><button class="btn-pill active">Todo</button><button class="btn-pill">Calzado</button><button class="btn-pill">Ropa</button></div></div>
+    </div>
+  </div>
+
+  <!-- INPUTS -->
+  <div class="section">
+    <div class="section-head"><h2>Inputs</h2><span class="count">2 states</span></div>
+    <div class="grid wide">
+      <div class="demo"><span class="demo-label">Default</span>
+        <div class="input">
+          <label class="input-label">Correo electrónico</label>
+          <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+          <input value="carlos@empresa.com">
+        </div>
+      </div>
+      <div class="demo"><span class="demo-label">Focus</span>
+        <div class="input">
+          <label class="input-label">Contraseña</label>
+          <span class="icon" style="color:#2563eb"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span>
+          <input type="password" value="••••••" autofocus>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BADGES -->
+  <div class="section">
+    <div class="section-head"><h2>Badges &amp; Markers</h2><span class="count">5 types</span></div>
+    <div class="grid">
+      <div class="demo"><span class="demo-label">Order status</span><div class="demo-stage" style="gap:18px;flex-wrap:wrap;display:flex">
+        <span class="status pending"><span class="ic"><svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="2" fill="currentColor"/></svg></span>Pendiente</span>
+        <span class="status ready"><span class="ic"><svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,5 4,7 8,3"/></svg></span>Listo</span>
+        <span class="status delivered"><span class="ic"><svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,5 4,7 8,3"/></svg></span>Entregado</span>
+      </div></div>
+      <div class="demo"><span class="demo-label">Discount marker (small)</span><div class="demo-stage"><span class="diamond-tag">💎 30% OFF</span></div></div>
+      <div class="demo"><span class="demo-label">Benefit pill (large)</span><div class="demo-stage"><span class="discount-pill">💎 Beneficio Exclusivo: 30% OFF</span></div></div>
+    </div>
+  </div>
+
+  <!-- PRODUCT CARDS -->
+  <div class="section">
+    <div class="section-head"><h2>Product Card</h2><span class="count">grid tile</span></div>
+    <div class="grid wide">
+      <div class="demo"><span class="demo-label">Standard</span>
+        <div class="demo-stage" style="background:#fff">
+          <div class="product-card">
+            <div class="img"><img src="../../assets/products/1204452-1.jpg" alt="">
+              <span class="badge-on-img diamond-tag">💎 30%</span>
+            </div>
+            <div><div class="meta-eyebrow">CALZADO</div><div class="name">Kit Tenis Slip On Casual</div></div>
+            <div class="price-row"><span class="price">$433</span><span class="strike">$619</span></div>
+            <button class="cta">Comprar Ahora</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo"><span class="demo-label">With image variant</span>
+        <div class="demo-stage" style="background:#fff">
+          <div class="product-card">
+            <div class="img"><img src="../../assets/products/1218710-1.jpg" alt="">
+              <span class="badge-on-img diamond-tag">💎 30%</span>
+            </div>
+            <div><div class="meta-eyebrow">ROPA</div><div class="name">Chamarra NFL Cowboys</div></div>
+            <div class="price-row"><span class="price">$1,014</span><span class="strike">$1,449</span></div>
+            <button class="cta">Comprar Ahora</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CART ROW -->
+  <div class="section">
+    <div class="section-head"><h2>Cart Row</h2><span class="count">list item</span></div>
+    <div class="grid wide">
+      <div class="demo"><span class="demo-label">Cart line item</span>
+        <div class="demo-stage">
+          <div class="cart-row">
+            <div class="thumb"><img src="../../assets/products/1204452-1.jpg"></div>
+            <div class="info">
+              <div class="name">Kit Tenis Slip On Casual</div>
+              <div class="meta">Talla 27 · Negro</div>
+            </div>
+            <div class="qty"><button>−</button><span>1</span><button>+</button></div>
+            <div class="price">$433</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORY CHIPS -->
+  <div class="section">
+    <div class="section-head"><h2>Category Chips</h2><span class="count">scroll row</span></div>
+    <div class="demo"><span class="demo-label">Horizontal filter</span>
+      <div class="demo-stage" style="gap:8px;display:flex;flex-wrap:wrap;justify-content:flex-start;padding:20px">
+        <div class="cat-chip active"><span class="emoji">✨</span>Todo</div>
+        <div class="cat-chip"><span class="emoji">👟</span>Calzado</div>
+        <div class="cat-chip"><span class="emoji">👕</span>Ropa</div>
+        <div class="cat-chip"><span class="emoji">👜</span>Accesorios</div>
+        <div class="cat-chip"><span class="emoji">⚽</span>Deportes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="section">
+    <div class="section-head"><h2>App Header</h2><span class="count">mobile</span></div>
+    <div class="demo"><span class="demo-label">Brand lockup with actions</span>
+      <div class="demo-stage">
+        <div class="header-bar">
+          <div class="lockup">
+            <div class="icon-shell"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+            <div class="titles"><div class="eyebrow">PRICE SHOES BENEFITS</div><div class="name">Sindicato Energía</div></div>
+          </div>
+          <div class="actions">
+            <div class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
+            <div class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="section">
+    <div class="section-head"><h2>Bottom Nav</h2><span class="count">4 tabs</span></div>
+    <div class="demo"><span class="demo-label">Tab bar</span>
+      <div class="demo-stage">
+        <div class="bnav">
+          <div class="bnav-item active"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>Inicio</div>
+          <div class="bnav-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Buscar</div>
+          <div class="bnav-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>Carrito</div>
+          <div class="bnav-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Yo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

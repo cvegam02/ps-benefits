@@ -7,13 +7,15 @@ import { useApp } from "@/context/AppContext"
 interface OrdersTableProps {
   orders: Order[]
   onSelectOrder: (order: Order) => void
-  onScanQR: () => void
+  onScanQR: (order: Order) => void
+  onMarkReady: (order: Order) => void
+  onDeliver: (order: Order) => void
 }
 
 const STATUS_CONFIG = {
-  pendiente: { label: "Pendiente", bg: "bg-amber-50",        text: "text-amber-700",       border: "border-amber-200" },
-  listo:     { label: "Listo",     bg: "bg-price-blue-50",   text: "text-price-blue-900",  border: "border-price-blue-200" },
-  entregado: { label: "Entregado", bg: "bg-green-50",        text: "text-green-700",        border: "border-green-200" },
+  pendiente: { label: "Pendiente", text: "text-amber-700",       iconBg: "bg-amber-500",       icon: "dot" },
+  listo:     { label: "Listo",     text: "text-price-blue-900",  iconBg: "bg-price-blue-900",  icon: "check" },
+  entregado: { label: "Entregado", text: "text-emerald-700",     iconBg: "bg-emerald-500",     icon: "check" },
 }
 
 const PAYMENT_LABELS: Record<string, string> = {
@@ -24,12 +26,12 @@ const PAYMENT_LABELS: Record<string, string> = {
   mercadopago: "🔵 Mercado Pago",
 }
 
-export default function OrdersTable({ orders, onSelectOrder, onScanQR }: OrdersTableProps) {
+export default function OrdersTable({ orders, onSelectOrder, onScanQR, onMarkReady, onDeliver }: OrdersTableProps) {
   const { dispatch } = useApp()
 
-  function markReady(e: React.MouseEvent, orderId: string) {
+  function handleMarkReady(e: React.MouseEvent, order: Order) {
     e.stopPropagation()
-    dispatch({ type: "UPDATE_ORDER_STATUS", payload: { orderId, status: "listo" as OrderStatus } })
+    onMarkReady(order)
   }
 
   if (orders.length === 0) {
@@ -108,7 +110,12 @@ export default function OrdersTable({ orders, onSelectOrder, onScanQR }: OrdersT
 
               {/* Estado */}
               <td className="px-5 py-5">
-                <span className={`inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-black border ${status.bg} ${status.text} ${status.border}`}>
+                <span className={`inline-flex items-center gap-[7px] text-[13px] font-bold leading-none ${status.text}`}>
+                  <span className={`w-4 h-4 rounded-full flex items-center justify-center text-white flex-shrink-0 ${status.iconBg}`}>
+                    {status.icon === "dot"
+                      ? <svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="2" fill="currentColor"/></svg>
+                      : <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="2,5 4,7 8,3"/></svg>}
+                  </span>
                   {status.label}
                 </span>
               </td>
@@ -124,7 +131,7 @@ export default function OrdersTable({ orders, onSelectOrder, onScanQR }: OrdersT
               <td className="px-5 py-5" onClick={(e) => e.stopPropagation()}>
                 {order.status === "pendiente" && (
                   <button
-                    onClick={(e) => markReady(e, order.id)}
+                    onClick={(e) => handleMarkReady(e, order)}
                     className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-price-blue-900 text-white text-sm font-black hover:bg-price-blue-800 active:scale-95 transition shadow-sm shadow-price-blue-900/20 whitespace-nowrap"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -135,7 +142,7 @@ export default function OrdersTable({ orders, onSelectOrder, onScanQR }: OrdersT
                 )}
                 {order.status === "listo" && (
                   <button
-                    onClick={(e) => { e.stopPropagation(); onScanQR() }}
+                    onClick={(e) => { e.stopPropagation(); onScanQR(order) }}
                     className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-price-pink-600 text-white text-sm font-black hover:bg-price-pink-700 active:scale-95 transition shadow-sm shadow-price-pink-600/20 whitespace-nowrap"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

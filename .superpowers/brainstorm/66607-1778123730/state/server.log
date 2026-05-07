@@ -1,0 +1,5 @@
+{"type":"server-started","port":63010,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:63010","screen_dir":"/home/cvega/Documentos/Projects/Demo IB/.superpowers/brainstorm/66607-1778123730/content","state_dir":"/home/cvega/Documentos/Projects/Demo IB/.superpowers/brainstorm/66607-1778123730/state"}
+{"type":"screen-added","file":"/home/cvega/Documentos/Projects/Demo IB/.superpowers/brainstorm/66607-1778123730/content/navbar-styles.html"}
+{"type":"screen-added","file":"/home/cvega/Documentos/Projects/Demo IB/.superpowers/brainstorm/66607-1778123730/content/hide-animation.html"}
+{"type":"screen-added","file":"/home/cvega/Documentos/Projects/Demo IB/.superpowers/brainstorm/66607-1778123730/content/waiting.html"}
+{"type":"server-stopped","reason":"idle timeout"}

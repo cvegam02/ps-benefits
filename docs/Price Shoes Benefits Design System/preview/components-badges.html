@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+html,body{margin:0;padding:0;background:#fff}
+.card{padding:28px 24px;background:#fff;font-family:Montserrat,sans-serif;display:flex;flex-direction:column;gap:22px}
+
+.section-label{font-size:9.5px;font-weight:700;color:#9ca3af;letter-spacing:.18em;text-transform:uppercase;line-height:1}
+
+.row{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+
+/* ===== Status: icon + label, no container ===== */
+.status{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;line-height:1;letter-spacing:-.005em}
+.status .ic{width:16px;height:16px;border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.status.pending{color:#b45309}
+.status.pending .ic{background:#f59e0b}
+.status.ready{color:#1e3a8a}
+.status.ready .ic{background:#1e3a8a}
+.status.delivered{color:#047857}
+.status.delivered .ic{background:#10b981}
+.status.cancelled{color:#9ca3af}
+.status.cancelled .ic{background:#9ca3af}
+
+/* In-context preview */
+.contextRow{display:flex;align-items:center;gap:14px;background:#f9fafb;border-radius:14px;padding:14px 16px}
+.ctxId{font:600 11px/1 ui-monospace,'SF Mono',monospace;color:#9ca3af;letter-spacing:.05em;width:64px;flex-shrink:0}
+.ctxName{font-size:13px;font-weight:700;color:#111827;flex:1}
+.ctxTotal{font-size:14px;font-weight:800;color:#1e3a8a;letter-spacing:-.03em;width:64px;text-align:right}
+
+/* Discount markers */
+.diamond{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:#9d174d;letter-spacing:-.005em;line-height:1}
+.diamond .gem{width:7px;height:7px;background:#db2777;transform:rotate(45deg);border-radius:1.5px}
+.hero{display:inline-flex;align-items:center;gap:10px;padding:10px 16px 10px 13px;border-radius:14px;background:linear-gradient(135deg,#db2777 0%,#ec4899 100%);color:#fff;font-size:13px;font-weight:700;line-height:1;letter-spacing:-.005em;box-shadow:0 6px 20px -4px rgba(219,39,119,.4),inset 0 1px 0 rgba(255,255,255,.2)}
+.hero .gem{width:9px;height:9px;background:#fff;transform:rotate(45deg);border-radius:2px;box-shadow:0 0 12px rgba(255,255,255,.7)}
+
+.divider{height:1px;background:#f3f4f6;margin:2px 0}
+</style>
+</head><body><div class="card">
+
+<div class="section-label">Estados de orden</div>
+<div class="row">
+  <span class="status pending"><span class="ic"><svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="2" fill="currentColor"/></svg></span>Pendiente</span>
+  <span class="status ready"><span class="ic"><svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,5 4,7 8,3"/></svg></span>Listo</span>
+  <span class="status delivered"><span class="ic"><svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,5 4,7 8,3"/></svg></span>Entregado</span>
+  <span class="status cancelled"><span class="ic"><svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="2.5" y1="2.5" x2="7.5" y2="7.5"/><line x1="7.5" y1="2.5" x2="2.5" y2="7.5"/></svg></span>Cancelado</span>
+</div>
+
+<div class="divider"></div>
+
+<div class="section-label">En contexto · fila de orden</div>
+<div class="contextRow">
+  <span class="ctxId">ORD-001</span>
+  <span class="ctxName">Carlos Méndez</span>
+  <span class="status pending"><span class="ic"><svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="2" fill="currentColor"/></svg></span>Pendiente</span>
+  <span class="ctxTotal">$1,447</span>
+</div>
+<div class="contextRow">
+  <span class="ctxId">ORD-003</span>
+  <span class="ctxName">Ana Ramírez</span>
+  <span class="status ready"><span class="ic"><svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,5 4,7 8,3"/></svg></span>Listo</span>
+  <span class="ctxTotal">$890</span>
+</div>
+<div class="contextRow">
+  <span class="ctxId">ORD-004</span>
+  <span class="ctxName">Roberto Hernández</span>
+  <span class="status delivered"><span class="ic"><svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,5 4,7 8,3"/></svg></span>Entregado</span>
+  <span class="ctxTotal">$619</span>
+</div>
+
+<div class="divider"></div>
+
+<div class="section-label">Discount markers</div>
+<div class="row">
+  <span class="diamond"><span class="gem"></span>30% OFF</span>
+  <span class="hero"><span class="gem"></span>Beneficio Exclusivo · 30% OFF</span>
+</div>
+
+</div></body></html>

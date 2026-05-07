@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useReducer, ReactNode } from "react"
-import { User, CartItem, Order, Product, AppView, OrderStatus } from "@/lib/types"
+import { User, CartItem, Order, Product, AppView, OrderStatus, VisitStatus } from "@/lib/types"
 import { tenants, getDiscountedPrice, generateOrderId, mockOrders } from "@/lib/mock-data"
 
 type AppState = {
@@ -10,6 +10,7 @@ type AppState = {
   orders: Order[]
   currentView: AppView
   selectedProduct: Product | null
+  pendingFulfillment: string
 }
 
 type AppAction =
@@ -19,6 +20,7 @@ type AppAction =
   | { type: "REMOVE_FROM_CART"; payload: number }
   | { type: "UPDATE_QUANTITY"; payload: { productId: number; quantity: number } }
   | { type: "CLEAR_CART" }
+  | { type: "SET_FULFILLMENT"; payload: string }
   | { type: "CREATE_ORDER"; payload: {
       userId: number
       userName: string
@@ -26,8 +28,10 @@ type AppAction =
       tenantName: string
       items: CartItem[]
       paymentMethod: string
+      fulfillmentOption: string
     }}
   | { type: "UPDATE_ORDER_STATUS"; payload: { orderId: string; status: OrderStatus } }
+  | { type: "COMPLETE_VISIT1"; payload: { orderId: string } }
   | { type: "SET_VIEW"; payload: AppView }
   | { type: "SELECT_PRODUCT"; payload: Product | null }
 
@@ -37,6 +41,7 @@ const initialState: AppState = {
   orders: mockOrders,
   currentView: "catalog",
   selectedProduct: null,
+  pendingFulfillment: "pickup",
 }
 
 function reducer(state: AppState, action: AppAction): AppState {
@@ -80,8 +85,11 @@ function reducer(state: AppState, action: AppAction): AppState {
     case "CLEAR_CART":
       return { ...state, cart: [] }
 
+    case "SET_FULFILLMENT":
+      return { ...state, pendingFulfillment: action.payload }
+
     case "CREATE_ORDER": {
-      const { userId, userName, tenantId, tenantName, items, paymentMethod } = action.payload
+      const { userId, userName, tenantId, tenantName, items, paymentMethod, fulfillmentOption } = action.payload
       const tenant = tenants.find((t) => t.id === tenantId)
       const discount = tenant?.discount ?? 0
 
@@ -103,6 +111,7 @@ function reducer(state: AppState, action: AppAction): AppState {
         total,
         status: "pendiente",
         paymentMethod,
+        fulfillmentOption,
         createdAt: new Date().toISOString(),
       }
 
@@ -114,6 +123,16 @@ function reducer(state: AppState, action: AppAction): AppState {
         ...state,
         orders: state.orders.map((o) =>
           o.id === action.payload.orderId ? { ...o, status: action.payload.status } : o
+        ),
+      }
+
+    case "COMPLETE_VISIT1":
+      return {
+        ...state,
+        orders: state.orders.map((o) =>
+          o.id === action.payload.orderId
+            ? { ...o, visitStatus: "v1-done" as VisitStatus }
+            : o
         ),
       }
 

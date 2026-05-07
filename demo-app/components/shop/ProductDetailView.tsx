@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useApp } from "@/context/AppContext"
 import { products, tenants, getDiscountedPrice, formatMXN, getProductImageUrl } from "@/lib/mock-data"
+import { PriceDisplay } from "@/components/ui/PriceDisplay"
 import { usePriceShoeProduct } from "@/lib/usePriceShoeProduct"
 import Image from "next/image"
 
@@ -140,17 +141,17 @@ export default function ProductDetailView() {
               <div className="flex items-center gap-2 mb-1">
                 <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-widest">{selectedProduct.category}</p>
                 {apiData?.labels?.map((label) => (
-                  <span key={label} className="text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 px-2 py-0.5 rounded-full">
-                    {label}
+                  <span key={label} className="inline-flex items-center gap-[3px] text-[9px] font-bold uppercase tracking-widest leading-none bg-price-pink-50 text-price-pink-600 border border-price-pink-100 px-2 py-1 rounded-lg">
+                    <span className="text-[8px]">◆</span>{label}
                   </span>
                 ))}
                 {!apiData?.outOfStock && apiData?.inStock && (
-                  <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full leading-none">
                     Disponible
                   </span>
                 )}
                 {apiData?.outOfStock && (
-                  <span className="text-[9px] font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center text-[9px] font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-1 rounded-full leading-none">
                     Agotado
                   </span>
                 )}
@@ -163,13 +164,13 @@ export default function ProductDetailView() {
               {apiData && (
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-gray-400 font-medium">Precio público</span>
-                  <span className="text-sm text-gray-400 line-through">{formatMXN(apiData.priceCustomer)}</span>
+                  <PriceDisplay amount={apiData.priceCustomer} className="text-sm text-gray-400 line-through" />
                 </div>
               )}
               <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-black text-price-blue-900 tracking-tight">{formatMXN(finalPrice)}</span>
+                <PriceDisplay amount={finalPrice} className="text-2xl font-black text-price-blue-900 leading-none" />
                 {!apiData && discount > 0 && (
-                  <span className="text-sm text-gray-400 line-through font-medium">{formatMXN(selectedProduct.price)}</span>
+                  <PriceDisplay amount={selectedProduct.price} className="text-sm text-gray-400 line-through font-medium" />
                 )}
                 {(apiData ? totalSavingsPct > 0 : discount > 0) && (
                   <span className="text-xs font-black text-white bg-price-pink-600 px-2 py-0.5 rounded-full uppercase tracking-tight">
@@ -184,7 +185,7 @@ export default function ProductDetailView() {
                 <span className="text-sm">💎</span>
                 <span className="text-sm font-bold text-price-blue-900">
                   {apiData
-                    ? `Precio catálogo $${apiData.priceCustomer.toFixed(0)} → tu precio $${formatMXN(finalPrice)} (${totalSavingsPct}% OFF)`
+                    ? `Precio catálogo $${apiData.priceCustomer.toFixed(2)} → tu precio ${formatMXN(finalPrice)} (${totalSavingsPct}% OFF)`
                     : `Beneficio Exclusivo: ${discount}% OFF aplicado`}
                 </span>
               </div>
@@ -426,17 +427,17 @@ export default function ProductDetailView() {
                   <div className="flex items-center gap-2 mb-2">
                     <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-[0.2em]">{selectedProduct.category}</p>
                     {apiData?.labels?.map((label) => (
-                      <span key={label} className="text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 px-2 py-0.5 rounded-full">
-                        {label}
+                      <span key={label} className="inline-flex items-center gap-[3px] text-[9px] font-bold uppercase tracking-widest leading-none bg-price-pink-50 text-price-pink-600 border border-price-pink-100 px-2 py-1 rounded-lg">
+                        <span className="text-[8px]">◆</span>{label}
                       </span>
                     ))}
                     {!apiData?.outOfStock && apiData?.inStock && (
-                      <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                      <span className="inline-flex items-center text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full leading-none">
                         En stock
                       </span>
                     )}
                     {apiData?.outOfStock && (
-                      <span className="text-[9px] font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">
+                      <span className="inline-flex items-center text-[9px] font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-1 rounded-full leading-none">
                         Agotado
                       </span>
                     )}
@@ -449,13 +450,13 @@ export default function ProductDetailView() {
                   {apiData && (
                     <div className="flex items-center gap-3">
                       <span className="text-sm text-gray-400 font-medium">Precio catálogo</span>
-                      <span className="text-base text-gray-400 line-through">{formatMXN(apiData.priceCustomer)}</span>
+                      <PriceDisplay amount={apiData.priceCustomer} className="text-base text-gray-400 line-through" />
                     </div>
                   )}
                   <div className="flex items-baseline gap-3 mt-1">
-                    <span className="text-4xl font-black text-price-blue-900 tracking-tighter">{formatMXN(finalPrice)}</span>
+                    <PriceDisplay amount={finalPrice} className="text-4xl font-black text-price-blue-900 leading-none" />
                     {!apiData && discount > 0 && (
-                      <span className="text-lg text-gray-400 line-through font-medium">{formatMXN(selectedProduct.price)}</span>
+                      <PriceDisplay amount={selectedProduct.price} className="text-lg text-gray-400 line-through font-medium" />
                     )}
                     {(apiData ? totalSavingsPct > 0 : discount > 0) && (
                       <span className="text-xs font-black text-white bg-price-pink-600 px-3 py-1 rounded-full uppercase tracking-tight">
@@ -470,7 +471,7 @@ export default function ProductDetailView() {
                     <span className="text-lg">💎</span>
                     <span className="text-sm font-bold text-price-blue-900">
                       {apiData
-                        ? `Precio catálogo $${apiData.priceCustomer.toFixed(0)} → tu precio $${formatMXN(finalPrice)} (${totalSavingsPct}% OFF)`
+                        ? `Precio catálogo $${apiData.priceCustomer.toFixed(2)} → tu precio ${formatMXN(finalPrice)} (${totalSavingsPct}% OFF)`
                         : `Beneficio Exclusivo: ${discount}% OFF aplicado`}
                     </span>
                   </div>

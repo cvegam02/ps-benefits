@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+html,body{margin:0;padding:0;background:#f3f4f6}
+.card{padding:28px 24px;background:#f3f4f6;font-family:Montserrat,sans-serif;display:flex;flex-direction:column;gap:18px}
+
+/* ============ SHOP NAVBAR (dark) ============ */
+.navbar-shop{
+  background:#1e3a8a;
+  border-radius:20px;
+  padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:14px;
+  box-shadow:0 12px 32px -12px rgba(30,58,138,.5);
+}
+
+/* Lockup that "lifts" off the navbar — slightly inset light surface */
+.lockup-shop{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;
+  padding:8px 14px 8px 8px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1);
+}
+.lockup-shop .glyph{
+  width:36px;height:36px;border-radius:10px;
+  background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  color:#1e3a8a;
+  flex-shrink:0;
+  box-shadow:0 4px 12px -2px rgba(0,0,0,.2);
+}
+.lockup-shop .titles{line-height:1.1}
+.lockup-shop .eyebrow{
+  font-size:8.5px;font-weight:600;letter-spacing:.22em;
+  text-transform:uppercase;color:#93c5fd;line-height:1;margin-bottom:5px;
+}
+.lockup-shop .eyebrow .dot{display:inline-block;width:3px;height:3px;border-radius:9999px;background:#ec4899;vertical-align:middle;margin:0 6px 2px 0}
+.lockup-shop .name{
+  font-size:15px;font-weight:600;letter-spacing:-.015em;color:#fff;line-height:1;
+}
+
+/* navbar right-side */
+.actions{display:flex;gap:8px}
+.icon-btn{
+  width:36px;height:36px;border-radius:10px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;color:#fff;
+}
+
+/* ============ STORE NAVBAR (light) ============ */
+.navbar-store{
+  background:#fff;
+  border-radius:20px;
+  padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:14px;
+  border:1px solid #e5e7eb;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+}
+.lockup-store{
+  display:flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,#fdf2f8 0%,#eff6ff 100%);
+  border:1px solid #f3e8f4;
+  border-radius:14px;
+  padding:8px 14px 8px 8px;
+}
+.lockup-store .glyph{
+  width:36px;height:36px;border-radius:10px;
+  background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  color:#db2777;
+  flex-shrink:0;
+  box-shadow:0 2px 8px -2px rgba(219,39,119,.25);
+}
+.lockup-store .titles{line-height:1.1}
+.lockup-store .eyebrow{
+  font-size:8.5px;font-weight:600;letter-spacing:.22em;
+  text-transform:uppercase;color:#9ca3af;line-height:1;margin-bottom:5px;
+}
+.lockup-store .eyebrow .dot{display:inline-block;width:3px;height:3px;border-radius:9999px;background:#db2777;vertical-align:middle;margin:0 6px 2px 0}
+.lockup-store .name{
+  font-size:15px;font-weight:600;letter-spacing:-.015em;color:#1f2937;line-height:1;
+}
+.icon-btn-light{
+  width:36px;height:36px;border-radius:10px;
+  background:#f9fafb;border:1px solid #f3f4f6;
+  display:flex;align-items:center;justify-content:center;color:#6b7280;
+}
+
+/* labels */
+.cap{font-size:9px;font-weight:700;color:#9ca3af;letter-spacing:.18em;text-transform:uppercase;padding-left:4px}
+</style>
+</head><body><div class="card">
+
+<div class="cap">Shop · navbar oscuro</div>
+<div class="navbar-shop">
+  <div class="lockup-shop">
+    <div class="glyph">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <path d="M9 12l2 2 4-4"/>
+      </svg>
+    </div>
+    <div class="titles">
+      <div class="eyebrow"><span class="dot"></span>Price Shoes Benefits</div>
+      <div class="name">Sindicato Energía</div>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
+    <div class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg></div>
+  </div>
+</div>
+
+<div class="cap">Store · navbar claro</div>
+<div class="navbar-store">
+  <div class="lockup-store">
+    <div class="glyph">
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+        <rect x="5" y="9" width="22" height="14" rx="2.5" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M5 13.5h22" stroke="currentColor" stroke-width="1.6"/>
+        <rect x="9" y="17" width="6" height="2.5" rx="0.5" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="titles">
+      <div class="eyebrow"><span class="dot"></span>Price Shoes Benefits</div>
+      <div class="name">Panel de Tienda</div>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="icon-btn-light"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+    <div class="icon-btn-light"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
+  </div>
+</div>
+
+</div></body></html>

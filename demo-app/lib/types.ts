@@ -32,6 +32,7 @@ export type CartItem = {
 }
 
 export type OrderStatus = "pendiente" | "listo" | "entregado"
+export type VisitStatus = "v1-done"
 
 export type Order = {
   id: string
@@ -45,6 +46,8 @@ export type Order = {
   total: number
   status: OrderStatus
   paymentMethod: string
+  fulfillmentOption?: string
+  visitStatus?: VisitStatus
   createdAt: string
 }
 

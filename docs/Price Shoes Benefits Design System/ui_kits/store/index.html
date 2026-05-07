@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Store UI Kit · Price Shoes Benefits</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  :root {
+    --blue-900: #1e3a8a;
+    --pink-600: #db2777;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--gray-100); font-family: 'Montserrat', sans-serif; color: var(--gray-900); }
+  .page { max-width: 1280px; margin: 0 auto; padding: 56px 32px 96px; }
+  .doc-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--blue-900); margin-bottom: 8px; }
+  .doc-title { font-size: 40px; font-weight: 900; letter-spacing: -0.03em; margin: 0 0 8px; }
+  .doc-sub { color: var(--gray-500); max-width: 640px; line-height: 1.5; font-size: 15px; margin-bottom: 48px; }
+  .section { margin-bottom: 64px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--gray-200); }
+  .section-head h2 { font-size: 13px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--blue-900); margin: 0; }
+  .section-head .count { font-size: 11px; color: var(--gray-400); font-weight: 600; }
+  .grid { display: grid; gap: 16px; }
+  .grid.c2 { grid-template-columns: repeat(2,1fr); }
+  .grid.c3 { grid-template-columns: repeat(3,1fr); }
+  .demo { background: #fff; border: 1px solid var(--gray-200); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+  .demo-label { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-400); }
+  .demo-stage { padding: 16px; background: var(--gray-50); border-radius: 16px; display: flex; align-items: center; justify-content: center; }
+
+  /* Order Card — kanban tile */
+  .order-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 16px; padding: 16px; width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+  .order-card.urgent { border-left: 4px solid var(--pink-600); padding-left: 13px; }
+  .order-card .row { display: flex; align-items: center; justify-content: space-between; }
+  .order-card .id { font: 600 11px/1 ui-monospace, 'SF Mono', monospace; color: var(--gray-400); letter-spacing: 0.05em; }
+  .order-card .age { display: inline-flex; align-items: center; gap: 4px; font: 700 10px/1 'Montserrat'; color: var(--gray-500); }
+  .order-card .customer { font: 700 14px/1.2 'Montserrat'; color: var(--gray-900); }
+  .order-card .summary { font: 500 12px/1.4 'Montserrat'; color: var(--gray-500); }
+  .order-card .total { display: flex; justify-content: space-between; align-items: baseline; padding-top: 10px; border-top: 1px dashed var(--gray-200); }
+  .order-card .total-label { font: 700 9px/1 'Montserrat'; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-400); }
+  .order-card .total-amount { font: 900 18px/1 'Montserrat'; color: var(--blue-900); letter-spacing: -0.03em; }
+
+  /* Kanban column */
+  .kanban-col { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 20px; padding: 14px; width: 280px; display: flex; flex-direction: column; gap: 10px; }
+  .kanban-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px 10px; border-bottom: 1px solid var(--gray-200); }
+  .kanban-title { font: 700 11px/1 'Montserrat'; letter-spacing: 0.15em; text-transform: uppercase; color: var(--blue-900); display: flex; align-items: center; gap: 8px; }
+  .kanban-title .swatch { width: 8px; height: 8px; border-radius: 9999px; background: #fbbf24; }
+  .kanban-count { background: #fff; border: 1px solid var(--gray-200); padding: 2px 8px; border-radius: 9999px; font: 700 10px/1 'Montserrat'; color: var(--gray-500); }
+
+  /* Status — icon + label, no container (canonical) */
+  .status { display: inline-flex; align-items: center; gap: 7px; font: 700 12.5px/1 'Montserrat'; letter-spacing: -0.005em; }
+  .status .ic { width: 15px; height: 15px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
+  .status.pending { color: #b45309; }
+  .status.pending .ic { background: #f59e0b; }
+  .status.ready { color: var(--blue-900); }
+  .status.ready .ic { background: var(--blue-900); }
+  .status.delivered { color: #047857; }
+  .status.delivered .ic { background: #10b981; }
+  .status.cancelled { color: #9ca3af; }
+  .status.cancelled .ic { background: #9ca3af; }
+
+  /* Stat tile */
+  .stat-tile { background: #fff; border: 1px solid var(--gray-200); border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 6px; min-width: 180px; }
+  .stat-tile .label { font: 700 10px/1 'Montserrat'; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-400); }
+  .stat-tile .value { font: 900 28px/1 'Montserrat'; color: var(--gray-900); letter-spacing: -0.03em; }
+  .stat-tile .delta { font: 600 11px/1 'Montserrat'; color: #047857; display: inline-flex; align-items: center; gap: 4px; }
+  .stat-tile.accent .value { color: var(--blue-900); }
+  .stat-tile.accent-pink .value { color: var(--pink-600); }
+
+  /* Sidebar nav */
+  .sidebar { background: var(--blue-900); border-radius: 24px; padding: 18px; width: 220px; display: flex; flex-direction: column; gap: 6px; }
+  .sidebar .lockup { display: flex; align-items: center; gap: 10px; padding: 6px 6px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 8px; }
+  .sidebar .icon-shell { width: 36px; height: 36px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; color: #fff; }
+  .sidebar .titles .eyebrow { font: 700 8px/1 'Montserrat'; letter-spacing: 0.2em; color: #93c5fd; }
+  .sidebar .titles .name { font: 900 13px/1 'Montserrat'; color: #fff; margin-top: 4px; letter-spacing: -0.02em; }
+  .sb-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; color: #93c5fd; font: 600 12px/1 'Montserrat'; cursor: pointer; }
+  .sb-item.active { background: rgba(255,255,255,0.1); color: #fff; }
+  .sb-item .badge-num { margin-left: auto; background: var(--pink-600); color: #fff; padding: 2px 8px; border-radius: 9999px; font: 700 10px/1 'Montserrat'; }
+
+  /* Buttons */
+  .btn-primary { padding: 10px 16px; border-radius: 12px; background: var(--blue-900); color: #fff; font: 700 12px/1 'Montserrat'; border: none; cursor: pointer; }
+  .btn-secondary { padding: 9px 14px; border-radius: 12px; background: #fff; color: var(--gray-700); font: 600 12px/1 'Montserrat'; border: 1px solid var(--gray-200); cursor: pointer; }
+  .btn-danger { padding: 10px 16px; border-radius: 12px; background: #fee2e2; color: #dc2626; font: 700 12px/1 'Montserrat'; border: 1px solid #fecaca; cursor: pointer; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; background: var(--gray-100); border-radius: 12px; padding: 4px; }
+  .tab { padding: 8px 16px; border-radius: 8px; font: 700 11px/1 'Montserrat'; color: var(--gray-500); cursor: pointer; }
+  .tab.active { background: #fff; color: var(--blue-900); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+
+  /* Customer search */
+  .search-input { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 12px 14px 12px 40px; font: 500 13px/1 'Montserrat'; width: 100%; outline: none; position: relative; }
+  .search-wrap { position: relative; width: 100%; max-width: 320px; }
+  .search-wrap .icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray-400); }
+
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="doc-eyebrow">UI KIT · STORE OPERATIONS</div>
+  <h1 class="doc-title">Price Shoes Benefits — Store</h1>
+  <p class="doc-sub">Desktop-only kanban for store staff. Tighter density, smaller radii, monospaced order IDs, sober information design. Same brand colors, more restrained usage.</p>
+
+  <!-- ORDER CARDS -->
+  <div class="section">
+    <div class="section-head"><h2>Order Cards</h2><span class="count">kanban tile</span></div>
+    <div class="grid c3">
+      <div class="demo"><span class="demo-label">Pendiente · normal</span>
+        <div class="demo-stage">
+          <div class="order-card">
+            <div class="row"><span class="id">ORD-001</span><span class="age">⏱ 18 min</span></div>
+            <div class="customer">Carlos Méndez</div>
+            <div class="summary">Tenis Slip On Negro · Talla 27<br>Sudadera Negra · M</div>
+            <div class="row"><span class="status pending"><span class="ic"><svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="2" fill="currentColor"/></svg></span>Pendiente</span></div>
+            <div class="total"><span class="total-label">Total</span><span class="total-amount">$1,447</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo"><span class="demo-label">Pendiente · urgente (>30 min)</span>
+        <div class="demo-stage">
+          <div class="order-card urgent">
+            <div class="row"><span class="id">ORD-007</span><span class="age" style="color:#dc2626">⏱ 42 min</span></div>
+            <div class="customer">Lucía Torres</div>
+            <div class="summary">Bolsa Aldo · Negro<br>Tenis Reebok · 25</div>
+            <div class="row"><span class="status pending"><span class="ic"><svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="2" fill="currentColor"/></svg></span>Pendiente</span></div>
+            <div class="total"><span class="total-label">Total</span><span class="total-amount">$2,398</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo"><span class="demo-label">Listo / Entregado</span>
+        <div class="demo-stage">
+          <div class="order-card">
+            <div class="row"><span class="id">ORD-004</span><span class="age">✓ 12:34</span></div>
+            <div class="customer">Roberto Hernández</div>
+            <div class="summary">Tenis Slip On Negro · 27</div>
+            <div class="row"><span class="status delivered"><span class="ic"><svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,5 4,7 8,3"/></svg></span>Entregado</span></div>
+            <div class="total"><span class="total-label">Total</span><span class="total-amount">$619</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KANBAN COLUMN -->
+  <div class="section">
+    <div class="section-head"><h2>Kanban Column</h2><span class="count">3 statuses</span></div>
+    <div class="demo"><span class="demo-label">Column with header + count</span>
+      <div class="demo-stage" style="display:flex;gap:14px;justify-content:flex-start;flex-wrap:wrap">
+        <div class="kanban-col">
+          <div class="kanban-head"><div class="kanban-title"><span class="swatch" style="background:#fbbf24"></span>Pendiente</div><span class="kanban-count">7</span></div>
+          <div class="order-card">
+            <div class="row"><span class="id">ORD-001</span><span class="age">⏱ 18 min</span></div>
+            <div class="customer">Carlos Méndez</div>
+            <div class="row"><span class="status pending"><span class="ic"><svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="2" fill="currentColor"/></svg></span>Pendiente</span></div>
+            <div class="total"><span class="total-label">Total</span><span class="total-amount">$1,447</span></div>
+          </div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-head"><div class="kanban-title"><span class="swatch" style="background:#1e3a8a"></span>Listo</div><span class="kanban-count">3</span></div>
+          <div class="order-card">
+            <div class="row"><span class="id">ORD-003</span><span class="age">⏱ 8 min</span></div>
+            <div class="customer">Ana Ramírez</div>
+            <div class="row"><span class="status ready"><span class="ic"><svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,5 4,7 8,3"/></svg></span>Listo</span></div>
+            <div class="total"><span class="total-label">Total</span><span class="total-amount">$890</span></div>
+          </div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-head"><div class="kanban-title"><span class="swatch" style="background:#10b981"></span>Entregado</div><span class="kanban-count">12</span></div>
+          <div class="order-card">
+            <div class="row"><span class="id">ORD-004</span><span class="age">✓ 12:34</span></div>
+            <div class="customer">Roberto Hernández</div>
+            <div class="row"><span class="status delivered"><span class="ic"><svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,5 4,7 8,3"/></svg></span>Entregado</span></div>
+            <div class="total"><span class="total-label">Total</span><span class="total-amount">$619</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="section">
+    <div class="section-head"><h2>Stat Tiles</h2><span class="count">summary KPIs</span></div>
+    <div class="grid c3">
+      <div class="demo"><span class="demo-label">Default</span>
+        <div class="demo-stage" style="background:#fff"><div class="stat-tile"><span class="label">Órdenes hoy</span><span class="value">22</span><span class="delta">↑ 14% vs ayer</span></div></div>
+      </div>
+      <div class="demo"><span class="demo-label">Accent — blue</span>
+        <div class="demo-stage" style="background:#fff"><div class="stat-tile accent"><span class="label">Pendientes</span><span class="value">7</span><span class="delta" style="color:#b45309">⏱ 1 urgente</span></div></div>
+      </div>
+      <div class="demo"><span class="demo-label">Accent — pink</span>
+        <div class="demo-stage" style="background:#fff"><div class="stat-tile accent-pink"><span class="label">Ingresos hoy</span><span class="value">$28,440</span><span class="delta">↑ 9% vs ayer</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="section">
+    <div class="section-head"><h2>Sidebar Nav</h2><span class="count">staff panel</span></div>
+    <div class="demo"><span class="demo-label">Operations sidebar</span>
+      <div class="demo-stage" style="background:var(--gray-100)">
+        <div class="sidebar">
+          <div class="lockup">
+            <div class="icon-shell"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><rect x="4" y="8" width="24" height="16" rx="3" stroke="currentColor" stroke-width="2.5"/><path d="M4 13h24" stroke="currentColor" stroke-width="2.5"/><rect x="8" y="17" width="6" height="3" rx="1" fill="currentColor"/></svg></div>
+            <div class="titles"><div class="eyebrow">PRICE BENEFITS</div><div class="name">Hermosillo Norte</div></div>
+          </div>
+          <div class="sb-item active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Órdenes<span class="badge-num">7</span></div>
+          <div class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>Inventario</div>
+          <div class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>Reportes</div>
+          <div class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 008 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H2a2 2 0 110-4h.09A1.65 1.65 0 004.6 8a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V2a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H22a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Configuración</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS / SEARCH -->
+  <div class="section">
+    <div class="section-head"><h2>Tabs &amp; Search</h2><span class="count">filters</span></div>
+    <div class="grid c2">
+      <div class="demo"><span class="demo-label">Segmented tabs</span>
+        <div class="demo-stage" style="background:#fff">
+          <div class="tabs"><div class="tab active">Hoy</div><div class="tab">Ayer</div><div class="tab">7 días</div><div class="tab">Mes</div></div>
+        </div>
+      </div>
+      <div class="demo"><span class="demo-label">Search</span>
+        <div class="demo-stage" style="background:#fff">
+          <div class="search-wrap">
+            <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input class="search-input" placeholder="Buscar ORD-XXX o cliente">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="section">
+    <div class="section-head"><h2>Buttons</h2><span class="count">3 variants</span></div>
+    <div class="grid c3">
+      <div class="demo"><span class="demo-label">Primary</span><div class="demo-stage"><button class="btn-primary">Marcar como Listo</button></div></div>
+      <div class="demo"><span class="demo-label">Secondary</span><div class="demo-stage"><button class="btn-secondary">Imprimir Ticket</button></div></div>
+      <div class="demo"><span class="demo-label">Destructive</span><div class="demo-stage"><button class="btn-danger">Cancelar Orden</button></div></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

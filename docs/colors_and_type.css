@@ -1,0 +1,289 @@
+/* ============================================================================
+   Price Shoes Benefits — Design Tokens
+   Colors + Typography + Spacing + Radius + Shadow
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  /* ── BRAND COLORS ─────────────────────────────────────────────────────── */
+  /* Price Shoes Blue — primary brand identity (deep navy → bright accent) */
+  --price-blue-50:  #eff6ff;
+  --price-blue-100: #dbeafe;
+  --price-blue-200: #bfdbfe;
+  --price-blue-300: #93c5fd;
+  --price-blue-400: #60a5fa;
+  --price-blue-500: #3b82f6;
+  --price-blue-600: #2563eb;
+  --price-blue-700: #1d4ed8;
+  --price-blue-800: #1e40af;  /* dark blue for badges */
+  --price-blue-900: #1e3a8a;  /* PRIMARY brand blue */
+
+  /* Price Shoes Pink — accent / commerce CTA / discount communication */
+  --price-pink-50:  #fdf2f8;
+  --price-pink-100: #fce7f3;
+  --price-pink-200: #fbcfe8;
+  --price-pink-300: #f9a8d4;
+  --price-pink-400: #f472b6;
+  --price-pink-500: #ec4899;
+  --price-pink-600: #db2777;  /* HOT PINK — main accent */
+  --price-pink-700: #be185d;
+  --price-pink-800: #9d174d;
+  --price-pink-900: #831843;
+
+  /* ── NEUTRALS ─────────────────────────────────────────────────────────── */
+  --gray-50:  #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --white:    #ffffff;
+  --black:    #000000;
+
+  /* App background tint (slightly cooler than gray-50) */
+  --bg-app:        #f9fafb;
+  --bg-store:      #f0f2f7;  /* used in store kanban */
+  --bg-subtle:     #fbfbfb;
+
+  /* ── SEMANTIC STATES ──────────────────────────────────────────────────── */
+  /* Success — emerald (delivered orders) */
+  --success-50:  #ecfdf5;
+  --success-100: #d1fae5;
+  --success-500: #10b981;
+  --success-600: #059669;
+  --success-700: #047857;
+
+  /* Warning — amber (pending orders) */
+  --warning-50:  #fffbeb;
+  --warning-100: #fef3c7;
+  --warning-200: #fde68a;
+  --warning-400: #fbbf24;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+  --warning-700: #b45309;
+
+  /* Danger — red (errors / form validation) */
+  --danger-50:  #fef2f2;
+  --danger-100: #fee2e2;
+  --danger-500: #ef4444;
+  --danger-600: #dc2626;
+
+  /* ── SEMANTIC FOREGROUND / BACKGROUND ────────────────────────────────── */
+  --fg-1: var(--gray-900);     /* high-emphasis body */
+  --fg-2: var(--gray-700);     /* body */
+  --fg-3: var(--gray-500);     /* meta / secondary */
+  --fg-4: var(--gray-400);     /* muted / placeholder */
+  --fg-on-blue:  var(--white);
+  --fg-on-pink:  var(--white);
+
+  --surface:        var(--white);
+  --surface-muted:  var(--gray-50);
+  --surface-border: var(--gray-100);
+
+  /* ── TYPOGRAPHY ───────────────────────────────────────────────────────── */
+  --font-sans: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Weights — Montserrat ranges 400→900, 800/900 used heavily for prices/headlines */
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
+  --fw-extrabold:800;
+  --fw-black:    900;
+
+  /* Sizes — micro overlines (9–11px UPPERCASE) up to display headlines (40px) */
+  --fs-overline: 10px;   /* uppercase labels: "BENEFICIO EXCLUSIVO" */
+  --fs-micro:    11px;
+  --fs-xs:       12px;
+  --fs-sm:       14px;
+  --fs-base:     16px;
+  --fs-lg:       18px;
+  --fs-xl:       20px;   /* card headlines */
+  --fs-2xl:      24px;
+  --fs-3xl:      30px;
+  --fs-4xl:      36px;
+  --fs-display:  48px;
+
+  /* Tracking — wide tracking on uppercase overlines is a defining brand mark */
+  --tracking-tightest: -0.04em;
+  --tracking-tight:    -0.02em;
+  --tracking-normal:   0;
+  --tracking-wide:     0.05em;
+  --tracking-wider:    0.1em;
+  --tracking-widest:   0.2em;   /* used on overlines + uppercase CTAs */
+
+  --leading-none:    1;
+  --leading-tight:   1.15;
+  --leading-snug:    1.3;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.65;
+
+  /* ── SPACING (4px base) ───────────────────────────────────────────────── */
+  --sp-0:  0;
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+  --sp-20: 80px;
+
+  /* ── RADIUS ─────────────────────────────────────────────────────────────
+     Price Shoes leans into VERY round radii — 16px is the floor, 32px is
+     where 'cards' live, and 'rounded-3rem' (48px) hero containers exist.    */
+  --radius-sm:  6px;     /* tags, dots */
+  --radius-md:  12px;    /* small chips */
+  --radius-lg:  16px;    /* inputs, small buttons */
+  --radius-xl:  20px;    /* large pills */
+  --radius-2xl: 24px;    /* main cards, badge containers */
+  --radius-3xl: 32px;    /* hero cards, primary cards */
+  --radius-4xl: 40px;    /* extra-large hero shells */
+  --radius-pill: 9999px; /* full pills, status indicators */
+
+  /* ── SHADOWS ───────────────────────────────────────────────────────────
+     Two shadow systems coexist:
+     1) Subtle ambient for cards (--shadow-sm / --shadow-md)
+     2) BRAND-tinted glow shadows for primary CTAs (--shadow-blue / pink)   */
+  --shadow-xs:    0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-xl:    0 12px 40px rgba(0, 0, 0, 0.12);
+  --shadow-2xl:   0 20px 60px rgba(0, 0, 0, 0.18);
+
+  /* Brand-tinted glows — used on primary CTAs to lift them off the surface */
+  --shadow-blue:  0 8px 24px rgba(30, 58, 138, 0.20);
+  --shadow-pink:  0 8px 24px rgba(219, 39, 119, 0.20);
+
+  /* Floating glassmorphism panel — bottom nav, etc. */
+  --shadow-floating: 0 8px 40px rgba(0, 0, 0, 0.12);
+
+  /* ── MOTION ────────────────────────────────────────────────────────────
+     PS uses fast, snappy transitions (150–300ms) plus the signature
+     active:scale-[0.95-0.98] press effect.                                  */
+  --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out:cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast:   150ms;
+  --dur-base:   200ms;
+  --dur-slow:   300ms;
+  --press-scale: 0.95;
+}
+
+/* ============================================================================
+   SEMANTIC TYPOGRAPHY CLASSES
+   ============================================================================ */
+
+body, .ps-body {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-base);
+  line-height: var(--leading-normal);
+  color: var(--fg-1);
+  background: var(--bg-app);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Display headline — used on hero "Descubre tus Beneficios" */
+.ps-display {
+  font-weight: var(--fw-black);
+  font-size: var(--fs-4xl);
+  line-height: var(--leading-none);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-1);
+}
+
+/* Page title */
+.ps-h1 {
+  font-weight: var(--fw-extrabold);
+  font-size: var(--fs-3xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-1);
+}
+
+/* Section title — "Mi Carrito", "Detalle de orden" */
+.ps-h2 {
+  font-weight: var(--fw-black);
+  font-size: var(--fs-xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-1);
+}
+
+/* Card title */
+.ps-h3 {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-lg);
+  line-height: var(--leading-snug);
+  color: var(--fg-1);
+}
+
+/* Body */
+.ps-body-lg { font-size: var(--fs-lg); line-height: var(--leading-normal); }
+.ps-body-sm { font-size: var(--fs-sm); line-height: var(--leading-normal); color: var(--fg-2); }
+
+/* Meta — small grey text under titles */
+.ps-meta {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--fg-3);
+}
+
+/* OVERLINE — the brand's signature: tiny uppercase wide-tracked label.
+   Appears above EVERY headline in the product. e.g. "PRICE SHOES BENEFITS",
+   "BENEFICIO EXCLUSIVO", "DETALLE", "CATÁLOGO COMPLETO".                    */
+.ps-overline {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  color: var(--price-pink-600);  /* often pink for accent, also blue/300 in dark surfaces */
+  line-height: var(--leading-none);
+}
+
+.ps-overline--blue   { color: var(--price-blue-900); }
+.ps-overline--blue-300 { color: var(--price-blue-300); }
+.ps-overline--muted  { color: var(--fg-4); }
+
+/* CTA / button label — uppercase, wide-tracked, black weight */
+.ps-cta-label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-black);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+/* Price — tabular, tight, brand blue, very heavy */
+.ps-price {
+  font-weight: var(--fw-black);
+  font-size: var(--fs-xl);
+  letter-spacing: var(--tracking-tightest);
+  color: var(--price-blue-900);
+  font-variant-numeric: tabular-nums;
+}
+
+.ps-price-strike {
+  color: var(--fg-4);
+  text-decoration: line-through;
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mono — for order IDs (ORD-001) */
+.ps-mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-overline);
+  color: var(--fg-4);
+  letter-spacing: var(--tracking-wide);
+}

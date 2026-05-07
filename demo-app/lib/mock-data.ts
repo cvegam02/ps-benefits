@@ -1,4 +1,5 @@
 import { Tenant, User, Product, Order } from "./types"
+import { priceShoeData } from "./priceshoes-data"
 
 export const tenants: Tenant[] = [
   { id: "sindicato_energia", name: "Sindicato Energía", discount: 30 },
@@ -260,7 +261,8 @@ export function formatMXN(amount: number): string {
   return new Intl.NumberFormat("es-MX", {
     style: "currency",
     currency: "MXN",
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(amount)
 }
 
@@ -276,6 +278,27 @@ export function timeAgo(isoDate: string): string {
 let orderCounter = mockOrders.length + 1
 export function generateOrderId(): string {
   return `ORD-${String(orderCounter++).padStart(3, "0")}`
+}
+
+export type StoreAvailability = "hoy" | "2-dias" | "sin-stock"
+
+export function getStoreAvailability(sku: string, storeId: number): StoreAvailability {
+  const inv = priceShoeData[sku]?.darkstoreInventory ?? 0
+  // Offset determinístico basado en el último dígito del SKU para variar por producto
+  const offset = parseInt(sku[sku.length - 1], 10) % 5
+  const slot = ((storeId - 1 + offset) % 5) + 1
+
+  if (inv > 300) return "hoy"
+  if (inv > 100) return slot <= 4 ? "hoy" : "2-dias"
+  if (inv > 30)  return slot <= 2 ? "hoy" : "2-dias"
+  if (inv > 5)   return slot === 1 ? "hoy" : "2-dias"
+  return slot <= 2 ? "2-dias" : "sin-stock"
+}
+
+export function joinNames(names: string[]): string {
+  if (names.length === 1) return names[0]
+  if (names.length === 2) return `${names[0]} y ${names[1]}`
+  return `${names.slice(0, -1).join(", ")} y ${names[names.length - 1]}`
 }
 
 export function getProductImageUrl(url: string | undefined, size: "thumb" | "full" = "full"): string {

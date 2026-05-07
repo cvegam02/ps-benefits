@@ -1,8 +1,10 @@
 "use client"
 
 import { useApp } from "@/context/AppContext"
-import { tenants, formatMXN } from "@/lib/mock-data"
+import { tenants, formatMXN, getStoreAvailability } from "@/lib/mock-data"
 import { QRCodeSVG } from "qrcode.react"
+
+const PICKUP_STORE_ID = 1
 
 export default function QRView() {
   const { state, dispatch } = useApp()
@@ -21,6 +23,14 @@ export default function QRView() {
     )
   }
 
+  const isTwoTrips = order.fulfillmentOption === "pickup-two-trips"
+  const itemsV1 = isTwoTrips
+    ? order.items.filter(i => getStoreAvailability(i.product.sku ?? "", PICKUP_STORE_ID) === "hoy")
+    : []
+  const itemsV2 = isTwoTrips
+    ? order.items.filter(i => getStoreAvailability(i.product.sku ?? "", PICKUP_STORE_ID) === "2-dias")
+    : []
+
   const qrData = JSON.stringify({
     orderId: order.id,
     total: order.total,
@@ -33,12 +43,83 @@ export default function QRView() {
     dispatch({ type: "SET_VIEW", payload: "catalog" })
   }
 
+  // ── Shared sub-components ──────────────────────────────────────────────────
+  const QRBlock = ({ size }: { size: number }) => (
+    <div className="flex flex-col items-center gap-3">
+      <div className="p-4 border-2 border-price-blue-100 rounded-2xl bg-white shadow-sm">
+        <QRCodeSVG value={qrData} size={size} level="M" includeMargin={false} fgColor="#1e3a8a" />
+      </div>
+      <div className="flex items-center gap-2 bg-price-blue-50 rounded-xl px-4 py-2 border border-price-blue-100">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+        <span className="text-sm font-bold text-price-blue-900 font-mono">{order.id}</span>
+      </div>
+      {isTwoTrips
+        ? <p className="text-xs text-gray-400 text-center">Válido para <span className="font-bold text-gray-600">ambas visitas</span> · muestra el mismo QR cada vez</p>
+        : <p className="text-xs text-gray-400">Válido por <span className="font-bold text-gray-600">24 horas</span></p>
+      }
+    </div>
+  )
+
+  // Timeline de dos visitas (mobile y desktop comparten)
+  const TwoTripTimeline = ({ compact = false }: { compact?: boolean }) => (
+    <div className={`flex flex-col gap-0 ${compact ? "" : ""}`}>
+      {/* Visita 1 */}
+      <div className="flex gap-3">
+        <div className="flex flex-col items-center">
+          <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0 shadow-sm">
+            <span className="text-white text-xs font-black">1</span>
+          </div>
+          <div className="w-0.5 bg-gray-200 flex-1 my-1" style={{ minHeight: 20 }} />
+        </div>
+        <div className="flex-1 pb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <p className="text-sm font-black text-gray-900">Visita 1 — Hoy</p>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 uppercase tracking-wide">Disponible ahora</span>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            {itemsV1.map(i => (
+              <div key={i.product.id} className="flex items-center gap-2 text-sm text-gray-600">
+                <span className="w-5 h-5 rounded-md bg-emerald-100 text-emerald-700 text-[10px] font-black flex items-center justify-center flex-shrink-0">{i.quantity}</span>
+                {i.product.name}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Visita 2 */}
+      <div className="flex gap-3">
+        <div className="flex flex-col items-center">
+          <div className="w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center flex-shrink-0 shadow-sm">
+            <span className="text-white text-xs font-black">2</span>
+          </div>
+        </div>
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-2">
+            <p className="text-sm font-black text-gray-900">Visita 2 — En 2 días hábiles</p>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 uppercase tracking-wide">Te avisaremos</span>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            {itemsV2.map(i => (
+              <div key={i.product.id} className="flex items-center gap-2 text-sm text-gray-500">
+                <span className="w-5 h-5 rounded-md bg-amber-100 text-amber-700 text-[10px] font-black flex items-center justify-center flex-shrink-0">{i.quantity}</span>
+                {i.product.name}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     <>
       {/* ── MOBILE ─────────────────────────────────────────────────────── */}
       <div className="flex flex-col h-full md:hidden bg-gray-50">
 
-        {/* Atmospheric success header */}
+        {/* Header */}
         <div className="relative bg-price-blue-900 pt-6 pb-8 px-4 overflow-hidden shadow-xl shadow-price-blue-900/20 flex-shrink-0">
           <div className="absolute top-0 right-0 w-48 h-48 bg-price-pink-500/10 rounded-full blur-3xl -mr-10 -mt-10" />
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-price-blue-400/10 rounded-full blur-2xl -ml-10 -mb-10" />
@@ -62,55 +143,58 @@ export default function QRView() {
           <div className="bg-white rounded-[2rem] border border-gray-100 p-5 flex flex-col items-center gap-4 shadow-sm shadow-black/[0.03]">
             <div className="text-center">
               <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-widest mb-0.5">Código de retiro</p>
-              <h2 className="text-base font-black text-gray-900">Muestra este QR en la tienda</h2>
+              <h2 className="text-base font-black text-gray-900">
+                {isTwoTrips ? "Muestra este QR en cada visita" : "Muestra este QR en la tienda"}
+              </h2>
             </div>
-
-            <div className="p-4 border-2 border-price-blue-100 rounded-2xl bg-white">
-              <QRCodeSVG
-                value={qrData}
-                size={200}
-                level="M"
-                includeMargin={false}
-                fgColor="#1e3a8a"
-              />
-            </div>
-
-            <div className="flex items-center gap-2 bg-price-blue-50 rounded-xl px-4 py-2.5 border border-price-blue-100">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
-              </svg>
-              <span className="text-sm font-bold text-price-blue-900">{order.id}</span>
-            </div>
-
-            <p className="text-xs text-gray-400 text-center">Válido por 24 horas</p>
+            <QRBlock size={200} />
           </div>
 
-          {/* Order summary */}
-          <div className="bg-white rounded-[2rem] border border-gray-100 overflow-hidden shadow-sm shadow-black/[0.03]">
-            <div className="px-5 py-4 border-b border-gray-50">
-              <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-widest mb-0.5">Resumen</p>
-              <h2 className="text-base font-black text-gray-900">Tu pedido</h2>
-            </div>
-            {order.items.map((item) => (
-              <div key={item.product.id} className="px-5 py-3 flex items-center justify-between border-b border-gray-50 last:border-b-0">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-6 h-6 rounded-lg bg-price-blue-900 text-white text-xs font-black flex items-center justify-center flex-shrink-0">
-                    {item.quantity}
-                  </span>
-                  <span className="text-sm text-gray-700 line-clamp-1">{item.product.name}</span>
-                </div>
-                <span className="text-sm font-black text-gray-900 flex-shrink-0 ml-2">
-                  {formatMXN(Math.round(item.product.price * item.quantity * (1 - order.discount / 100)))}
-                </span>
+          {/* Two-trip timeline */}
+          {isTwoTrips && (
+            <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm shadow-black/[0.03]">
+              <div className="px-5 py-4 border-b border-gray-50">
+                <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-widest mb-0.5">Plan de retiro</p>
+                <h2 className="text-base font-black text-gray-900">Tus 2 visitas a la tienda</h2>
               </div>
-            ))}
-            <div className="px-5 py-4 bg-gray-50 flex justify-between items-center">
+              <div className="px-5 py-4">
+                <TwoTripTimeline compact />
+              </div>
+            </div>
+          )}
+
+          {/* Order summary */}
+          {!isTwoTrips && (
+            <div className="bg-white rounded-[2rem] border border-gray-100 overflow-hidden shadow-sm shadow-black/[0.03]">
+              <div className="px-5 py-4 border-b border-gray-50">
+                <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-widest mb-0.5">Resumen</p>
+                <h2 className="text-base font-black text-gray-900">Tu pedido</h2>
+              </div>
+              {order.items.map((item) => (
+                <div key={item.product.id} className="px-5 py-3 flex items-center justify-between border-b border-gray-50 last:border-b-0">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-lg bg-price-blue-900 text-white text-xs font-black flex items-center justify-center flex-shrink-0">{item.quantity}</span>
+                    <span className="text-sm text-gray-700 line-clamp-1">{item.product.name}</span>
+                  </div>
+                  <span className="text-sm font-black text-gray-900 flex-shrink-0 ml-2">
+                    {formatMXN(Math.round(item.product.price * item.quantity * (1 - order.discount / 100)))}
+                  </span>
+                </div>
+              ))}
+              <div className="px-5 py-4 bg-gray-50 flex justify-between items-center">
+                <span className="text-base font-black text-gray-900">Total pagado</span>
+                <span className="text-lg font-black text-price-pink-600">{formatMXN(order.total)}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Total for two-trips */}
+          {isTwoTrips && (
+            <div className="bg-white rounded-[2rem] border border-gray-100 px-5 py-4 shadow-sm shadow-black/[0.03] flex justify-between items-center">
               <span className="text-base font-black text-gray-900">Total pagado</span>
               <span className="text-lg font-black text-price-pink-600">{formatMXN(order.total)}</span>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Done button */}
@@ -161,65 +245,64 @@ export default function QRView() {
         {/* Main content */}
         <div className="flex-1 overflow-y-auto p-10">
           <div className="max-w-5xl mx-auto">
-            <div className="grid grid-cols-2 gap-8">
+            <div className={`grid gap-8 ${isTwoTrips ? "grid-cols-2" : "grid-cols-2"}`}>
 
               {/* QR Card */}
               <div className="bg-white rounded-[2.5rem] border border-gray-100 p-10 flex flex-col items-center gap-6 shadow-sm">
                 <div className="text-center">
                   <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-[0.2em] mb-1">Código de retiro</p>
-                  <h2 className="text-xl font-black text-gray-900">Muestra este QR en la tienda</h2>
-                  <p className="text-sm text-gray-500 mt-1">El operador escaneará el código para confirmar tu pedido</p>
+                  <h2 className="text-xl font-black text-gray-900">
+                    {isTwoTrips ? "Un solo QR para tus 2 visitas" : "Muestra este QR en la tienda"}
+                  </h2>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {isTwoTrips
+                      ? "Muestra este mismo código cada vez que vayas a la tienda"
+                      : "El operador escaneará el código para confirmar tu pedido"}
+                  </p>
                 </div>
-
-                <div className="p-5 border-2 border-price-blue-100 rounded-2xl bg-white shadow-sm">
-                  <QRCodeSVG
-                    value={qrData}
-                    size={220}
-                    level="M"
-                    includeMargin={false}
-                    fgColor="#1e3a8a"
-                  />
-                </div>
-
-                <div className="flex items-center gap-2 bg-price-blue-50 rounded-xl px-5 py-3 border border-price-blue-100">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                  </svg>
-                  <span className="text-sm font-bold text-price-blue-900">Orden: {order.id}</span>
-                </div>
-
-                <p className="text-xs text-gray-400">Válido por <span className="font-bold text-gray-600">24 horas</span></p>
+                <QRBlock size={220} />
               </div>
 
-              {/* Order details */}
+              {/* Right col: timeline or order details */}
               <div className="flex flex-col gap-6">
 
-                {/* Order summary */}
-                <div className="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm">
-                  <div className="px-8 py-5 border-b border-gray-100">
-                    <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-[0.2em] mb-1">Resumen</p>
-                    <h2 className="text-xl font-black text-gray-900">Tu pedido</h2>
+                {isTwoTrips ? (
+                  /* Two-trip timeline */
+                  <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm flex-1">
+                    <div className="px-8 py-5 border-b border-gray-100">
+                      <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-[0.2em] mb-1">Plan de retiro</p>
+                      <h2 className="text-xl font-black text-gray-900">Tus 2 visitas a la tienda</h2>
+                    </div>
+                    <div className="px-8 py-6">
+                      <TwoTripTimeline />
+                    </div>
                   </div>
-                  <div className="divide-y divide-gray-50">
-                    {order.items.map((item) => (
-                      <div key={item.product.id} className="px-8 py-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <span className="w-7 h-7 rounded-lg bg-price-blue-900 text-white text-xs font-black flex items-center justify-center flex-shrink-0">
-                            {item.quantity}
+                ) : (
+                  /* Standard order summary */
+                  <div className="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm">
+                    <div className="px-8 py-5 border-b border-gray-100">
+                      <p className="text-[10px] font-bold text-price-pink-600 uppercase tracking-[0.2em] mb-1">Resumen</p>
+                      <h2 className="text-xl font-black text-gray-900">Tu pedido</h2>
+                    </div>
+                    <div className="divide-y divide-gray-50">
+                      {order.items.map((item) => (
+                        <div key={item.product.id} className="px-8 py-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <span className="w-7 h-7 rounded-lg bg-price-blue-900 text-white text-xs font-black flex items-center justify-center flex-shrink-0">{item.quantity}</span>
+                            <span className="text-base text-gray-700">{item.product.name}</span>
+                          </div>
+                          <span className="text-base font-black text-gray-900">
+                            {formatMXN(Math.round(item.product.price * item.quantity * (1 - order.discount / 100)))}
                           </span>
-                          <span className="text-base text-gray-700">{item.product.name}</span>
                         </div>
-                        <span className="text-base font-black text-gray-900">
-                          {formatMXN(Math.round(item.product.price * item.quantity * (1 - order.discount / 100)))}
-                        </span>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                    <div className="px-8 py-5 bg-gray-50 flex justify-between items-center border-t border-gray-100">
+                      <span className="text-base font-black text-gray-900">Total pagado</span>
+                      <span className="text-xl font-black text-price-pink-600">{formatMXN(order.total)}</span>
+                    </div>
                   </div>
-                  <div className="px-8 py-5 bg-gray-50 flex justify-between items-center border-t border-gray-100">
-                    <span className="text-base font-black text-gray-900">Total pagado</span>
-                    <span className="text-xl font-black text-price-pink-600">{formatMXN(order.total)}</span>
-                  </div>
-                </div>
+                )}
 
                 {/* Pickup info */}
                 <div className="bg-white rounded-[2.5rem] border border-gray-100 p-8 shadow-sm">

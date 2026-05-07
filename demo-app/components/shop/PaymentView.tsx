@@ -78,6 +78,7 @@ export default function PaymentView() {
         tenantName: tenant?.name ?? "",
         items: state.cart,
         paymentMethod: selectedMethod,
+        fulfillmentOption: state.pendingFulfillment,
       },
     })
     dispatch({ type: "SET_VIEW", payload: "processing" })
