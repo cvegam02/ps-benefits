@@ -1,11 +1,10 @@
 "use client"
 
-import { useRef } from "react"
+import { useState } from "react"
 import { useApp } from "@/context/AppContext"
 import { tenants, formatMXN, timeAgo, getProductImageUrl } from "@/lib/mock-data"
 import { Order } from "@/lib/types"
-import { useScrollHide } from "@/hooks/useScrollHide"
-import { BottomNav } from "@/components/shop/BottomNav"
+import { MobileMenuSheet } from "@/components/shop/MobileMenuSheet"
 
 const STATUS_CONFIG = {
   pendiente: { label: "Pendiente",  text: "text-amber-700",       iconBg: "bg-amber-500",       icon: "dot"   },
@@ -84,8 +83,7 @@ export default function ProfileView() {
   const user = state.currentUser!
   const tenant = tenants.find((t) => t.id === user.tenantId)
   const cartCount = state.cart.reduce((sum, i) => sum + i.quantity, 0)
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const navHidden = useScrollHide(scrollRef)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const myOrders = state.orders
     .filter((o) => o.userId === user.id)
@@ -112,7 +110,7 @@ export default function ProfileView() {
             <div className="w-16 h-16 rounded-3xl bg-price-pink-600 flex items-center justify-center shadow-xl shadow-price-pink-600/40 flex-shrink-0">
               <span className="text-white text-xl font-black tracking-tight">{initials}</span>
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="text-white text-xl font-black leading-tight truncate">{user.name}</p>
               <p className="text-price-blue-300 text-xs font-medium truncate">{user.email}</p>
               <div className="flex items-center gap-2 mt-1.5">
@@ -124,6 +122,21 @@ export default function ProfileView() {
                 </div>
               </div>
             </div>
+            <button
+              onClick={() => setMenuOpen(prev => !prev)}
+              className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center flex-shrink-0 active:scale-90 transition-transform self-start"
+              aria-label="Menú de navegación"
+            >
+              {menuOpen ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+              )}
+            </button>
           </div>
         </div>
       </div>
@@ -181,11 +194,11 @@ export default function ProfileView() {
       </header>
 
       {/* ── CONTENT ───────────────────────────────────────────────────── */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto no-scrollbar">
+      <div className="flex-1 overflow-y-auto no-scrollbar">
         <div className="md:flex md:gap-0">
 
           {/* ── LEFT / MAIN COLUMN ──────────────────────────────────── */}
-          <div className="flex-1 px-4 md:px-8 pt-6 md:pt-8 pb-32 md:pb-12 space-y-5">
+          <div className="flex-1 px-4 md:px-8 pt-6 md:pt-8 pb-6 md:pb-12 space-y-5">
 
             {/* Stat cards */}
             <div className="grid grid-cols-3 gap-3">
@@ -376,11 +389,12 @@ export default function ProfileView() {
         </div>
       </div>
 
-      <BottomNav
+      <MobileMenuSheet
+        open={menuOpen}
         activeTab="profile"
         cartCount={cartCount}
-        hidden={navHidden}
         onNavigate={(view) => dispatch({ type: "SET_VIEW", payload: view })}
+        onClose={() => setMenuOpen(false)}
       />
     </div>
   )
