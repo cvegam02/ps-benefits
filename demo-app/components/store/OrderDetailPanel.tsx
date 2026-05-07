@@ -148,7 +148,7 @@ export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelPro
           </section>
 
           {/* Customer & Payment */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white rounded-[2rem] border border-gray-100 p-6 shadow-sm">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Cliente</p>
               <p className="text-sm font-bold text-gray-900 mb-1">{order.userName}</p>
@@ -290,7 +290,7 @@ export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelPro
 
           {/* Completed */}
           {order.status === "entregado" && (
-            <div className="w-full py-4.5 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center gap-3 text-emerald-700 shadow-sm shadow-emerald-600/5">
+            <div className="w-full py-4 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center gap-3 text-emerald-700 shadow-sm shadow-emerald-600/5">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               <span className="font-black text-xs uppercase tracking-widest">TRANSACCIÓN FINALIZADA</span>
             </div>
