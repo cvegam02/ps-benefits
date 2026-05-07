@@ -124,9 +124,14 @@ export default function ProfileView() {
             </div>
             <button
               onClick={() => setMenuOpen(prev => !prev)}
-              className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center flex-shrink-0 active:scale-90 transition-transform self-start"
+              className="relative w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center flex-shrink-0 active:scale-90 transition-transform self-start"
               aria-label="Menú de navegación"
             >
+              {!menuOpen && cartCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] rounded-full bg-price-pink-600 border-2 border-[#1e3a8a] text-white text-[9px] font-black flex items-center justify-center px-1 leading-none">
+                  {cartCount > 9 ? "9+" : cartCount}
+                </span>
+              )}
               {menuOpen ? (
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
