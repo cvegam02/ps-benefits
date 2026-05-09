@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
+  basePath: '/ps-benefits',
+  assetPrefix: '/ps-benefits',
   images: {
     unoptimized: true,
     remotePatterns: [
