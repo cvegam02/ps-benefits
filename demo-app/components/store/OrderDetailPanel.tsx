@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import { Order } from "@/lib/types"
-import { formatMXN, timeAgo, getProductImageUrl, getStoreAvailability } from "@/lib/mock-data"
+import { formatMXN, getProductImageUrl } from "@/lib/mock-data"
 import { useApp } from "@/context/AppContext"
 import { useState } from "react"
 import ReadyConfirmationModal from "./ReadyConfirmationModal"
@@ -36,8 +36,6 @@ const PAYMENT_ICONS: Record<string, string> = {
   mercadopago: "🔵",
 }
 
-const PICKUP_STORE_ID = 1
-
 export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelProps) {
   const { dispatch } = useApp()
   const [showConfirm, setShowConfirm] = useState(false)
@@ -47,13 +45,6 @@ export default function OrderDetailPanel({ order, onClose }: OrderDetailPanelPro
 
   const isTwoTrips = order.fulfillmentOption === "pickup-two-trips"
   const visit1Done = order.visitStatus === "v1-done"
-
-  const itemsV1 = isTwoTrips
-    ? order.items.filter(i => getStoreAvailability(i.product.sku ?? "", PICKUP_STORE_ID) === "hoy")
-    : []
-  const itemsV2 = isTwoTrips
-    ? order.items.filter(i => getStoreAvailability(i.product.sku ?? "", PICKUP_STORE_ID) === "2-dias")
-    : []
 
   function markAsReady() {
     setShowConfirm(true)

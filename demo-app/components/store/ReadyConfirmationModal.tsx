@@ -33,7 +33,7 @@ export default function ReadyConfirmationModal({ order, onConfirm, onClose }: Re
             </div>
             <h3 className="text-2xl font-black leading-tight mb-2">¿Confirmar pedido listo?</h3>
             <p className="text-price-blue-100 text-sm font-medium leading-relaxed max-w-[280px]">
-              Al confirmar, el pedido pasará a <span className="text-white font-bold">"Listo para Recoger"</span> y notificaremos al cliente.
+              Al confirmar, el pedido pasará a <span className="text-white font-bold">&quot;Listo para Recoger&quot;</span> y notificaremos al cliente.
             </p>
           </div>
         </div>

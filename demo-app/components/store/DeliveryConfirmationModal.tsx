@@ -2,7 +2,6 @@
 
 import Image from "next/image"
 import { Order } from "@/lib/types"
-import { formatMXN } from "@/lib/mock-data"
 
 interface DeliveryConfirmationModalProps {
   order: Order
@@ -34,7 +33,7 @@ export default function DeliveryConfirmationModal({ order, onConfirm, onClose }:
             </div>
             <h3 className="text-2xl font-black leading-tight mb-2">¿Confirmar entrega?</h3>
             <p className="text-emerald-50 text-sm font-medium leading-relaxed max-w-[280px]">
-              Estás a punto de marcar este pedido como <span className="text-white font-bold">"Entregado"</span> al cliente final.
+              Estás a punto de marcar este pedido como <span className="text-white font-bold">&quot;Entregado&quot;</span> al cliente final.
             </p>
           </div>
         </div>

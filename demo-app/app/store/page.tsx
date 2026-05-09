@@ -8,6 +8,7 @@ import { formatMXN, timeAgo } from "@/lib/mock-data"
 import OrderDetailPanel from "@/components/store/OrderDetailPanel"
 import ReadyConfirmationModal from "@/components/store/ReadyConfirmationModal"
 import DeliveryConfirmationModal from "@/components/store/DeliveryConfirmationModal"
+import QRScanner from "@/components/store/QRScanner"
 import { playSound } from "@/lib/sounds"
 
 // ── Order Card ─────────────────────────────────────────────────────────────
@@ -16,15 +17,12 @@ function OrderCard({
   onSelect,
   onScanQR,
   onMarkReady,
-  onDeliver,
 }: {
   order: Order
   onSelect: () => void
   onScanQR: (order: Order) => void
   onMarkReady: (order: Order) => void
-  onDeliver: (order: Order) => void
 }) {
-  const { dispatch } = useApp()
 
   function handleMarkReady(e: React.MouseEvent) {
     e.stopPropagation()
@@ -170,7 +168,6 @@ function KanbanColumn({
   onSelect,
   onScanQR,
   onMarkReady,
-  onDeliver,
 }: {
   status: "pendiente" | "listo" | "entregado"
   label: string
@@ -178,7 +175,6 @@ function KanbanColumn({
   onSelect: (o: Order) => void
   onScanQR: (order: Order) => void
   onMarkReady: (order: Order) => void
-  onDeliver: (order: Order) => void
 }) {
   const styles = {
     pendiente: { dot: "bg-amber-400 animate-pulse", text: "text-amber-600",      count: "bg-amber-100 text-amber-600" },
@@ -219,7 +215,6 @@ function KanbanColumn({
               onSelect={() => onSelect(order)}
               onScanQR={onScanQR}
               onMarkReady={onMarkReady}
-              onDeliver={onDeliver}
             />
           ))
         )}
@@ -411,9 +406,9 @@ export default function StorePage() {
 
       {/* ── DESKTOP: 3-column kanban ─────────────────────────────────────── */}
       <div className="hidden md:grid grid-cols-3 gap-6 flex-1 px-8 pt-8 pb-8 relative z-10">
-        <KanbanColumn status="pendiente" label="Pendientes"          orders={byStatus.pendiente} onSelect={(o) => setSelectedOrderId(o.id)} onScanQR={(o) => setOrderToDeliver(o)} onMarkReady={setOrderToMarkReady} onDeliver={setOrderToDeliver} />
-        <KanbanColumn status="listo"     label="Listos para recoger" orders={byStatus.listo}     onSelect={(o) => setSelectedOrderId(o.id)} onScanQR={(o) => setOrderToDeliver(o)} onMarkReady={setOrderToMarkReady} onDeliver={setOrderToDeliver} />
-        <KanbanColumn status="entregado" label="Entregados"          orders={byStatus.entregado} onSelect={(o) => setSelectedOrderId(o.id)} onScanQR={(o) => setOrderToDeliver(o)} onMarkReady={setOrderToMarkReady} onDeliver={setOrderToDeliver} />
+        <KanbanColumn status="pendiente" label="Pendientes"          orders={byStatus.pendiente} onSelect={(o) => setSelectedOrderId(o.id)} onScanQR={(o) => setOrderToDeliver(o)} onMarkReady={setOrderToMarkReady} />
+        <KanbanColumn status="listo"     label="Listos para recoger" orders={byStatus.listo}     onSelect={(o) => setSelectedOrderId(o.id)} onScanQR={(o) => setOrderToDeliver(o)} onMarkReady={setOrderToMarkReady} />
+        <KanbanColumn status="entregado" label="Entregados"          orders={byStatus.entregado} onSelect={(o) => setSelectedOrderId(o.id)} onScanQR={(o) => setOrderToDeliver(o)} onMarkReady={setOrderToMarkReady} />
       </div>
 
       {/* ── MOBILE: tabs ────────────────────────────────────────────────── */}
@@ -482,7 +477,6 @@ export default function StorePage() {
                 onSelect={() => setSelectedOrderId(order.id)}
                 onScanQR={(o) => setOrderToDeliver(o)}
                 onMarkReady={setOrderToMarkReady}
-                onDeliver={setOrderToDeliver}
               />
             ))
           )}

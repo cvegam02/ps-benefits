@@ -93,11 +93,6 @@ const IconTwoTrips = ({ color = "#1e3a8a" }: { color?: string }) => (
     <path d="M17 4l2 2-2 2M19 6H15"/>
   </svg>
 )
-const IconSplit = ({ color = "#1e3a8a" }: { color?: string }) => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>
-  </svg>
-)
 
 export default function CheckoutView() {
   const { state, dispatch } = useApp()
@@ -248,14 +243,6 @@ export default function CheckoutView() {
         )}
       </>
     )
-  }
-
-  // Título dinámico para la sección de disponibilidad
-  const availabilityTitle = () => {
-    if (fulfillment === "home-all")       return "Envío a domicilio"
-    if (fulfillment === "wait-pickup")    return "Retiro en tienda (en 2 días)"
-    if (fulfillment === "pickup-two-trips") return "Retiro en 2 visitas a tienda"
-    return "Disponibilidad en tienda"
   }
 
   return (

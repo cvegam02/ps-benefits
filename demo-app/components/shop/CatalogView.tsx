@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useApp } from "@/context/AppContext"
 import { MobileMenuSheet } from "@/components/shop/MobileMenuSheet"
-import { products, tenants, getDiscountedPrice, formatMXN, getProductImageUrl } from "@/lib/mock-data"
+import { products, tenants, getDiscountedPrice, getProductImageUrl } from "@/lib/mock-data"
 import { Product } from "@/lib/types"
 import Image from "next/image"
 import { PriceDisplay } from "@/components/ui/PriceDisplay"

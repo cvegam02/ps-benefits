@@ -1,15 +1,13 @@
 "use client"
 
-import { Order, OrderStatus } from "@/lib/types"
+import { Order } from "@/lib/types"
 import { formatMXN, timeAgo } from "@/lib/mock-data"
-import { useApp } from "@/context/AppContext"
 
 interface OrdersTableProps {
   orders: Order[]
   onSelectOrder: (order: Order) => void
   onScanQR: (order: Order) => void
   onMarkReady: (order: Order) => void
-  onDeliver: (order: Order) => void
 }
 
 const STATUS_CONFIG = {
@@ -26,8 +24,7 @@ const PAYMENT_LABELS: Record<string, string> = {
   mercadopago: "🔵 Mercado Pago",
 }
 
-export default function OrdersTable({ orders, onSelectOrder, onScanQR, onMarkReady, onDeliver }: OrdersTableProps) {
-  const { dispatch } = useApp()
+export default function OrdersTable({ orders, onSelectOrder, onScanQR, onMarkReady }: OrdersTableProps) {
 
   function handleMarkReady(e: React.MouseEvent, order: Order) {
     e.stopPropagation()
